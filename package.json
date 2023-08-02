@@ -1,0 +1,62 @@
+{
+  "name": "udn-browser",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "process": "^0.11.10",
+    "stream-browserify": "^3.0.0",
+    "react-app-rewired": "^2.2.1",
+    "@gmod/tabix": "^1.5.3",
+    "@gmod/vcf": "^5.0.6",
+    "bootstrap": "^4.6.1",
+    "d3-format": "^3.1.0",
+    "generic-filehandle": "^3.0.0",
+    "higlass": "1.12.4",
+    "higlass-register": "^0.3.0",
+    "higlass-sequence": "^0.4.2",
+    "higlass-transcripts": "^0.3.8",
+    "higlass-text": "^0.1.6",
+    "higlass-orthologs": "^0.2.4",
+    "higlass-clinvar": "^0.2.5",
+    "higlass-gnomad": "^0.2.2",
+    "higlass-cohort": "0.4.0-beta.1",
+    "higlass-bigwig-datafetcher": "^0.2.0",
+    "pixi.js": "^5.2.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "5.0.1",
+    "react-tooltip": "4.2.10",
+    "underscore": "^1.10.2",
+    "web-vitals": "^2.1.4",
+    "browserify-zlib": "^0.2.0",
+    "assert": "^2.0.0",
+    "util": "^0.12.5",
+    "axios": "^1.4.0",
+    "react-cssfx-loading": "^1.1.0"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
