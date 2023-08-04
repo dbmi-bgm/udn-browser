@@ -19,10 +19,10 @@ function App() {
 
       <div className="container mt-5">
         <h2 >Gene-level statistical analysis</h2>
-        {/* <GeneTable /> */}
+        <GeneTable />
       </div>
 
-      <div className="container mt-5">
+      {/* <div className="container mt-5">
         <h2 >Variant-level browser</h2>
         <div className="row mt-4">
           <div className="col-md-3 ">
@@ -35,7 +35,7 @@ function App() {
             <HiglassBrowser />
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="container-fluid bg-light mt-2 py-4 text-center">
         <div className="mb-1">

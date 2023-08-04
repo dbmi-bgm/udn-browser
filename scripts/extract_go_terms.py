@@ -45,13 +45,15 @@ def main(annotated_vcf):
             infos = l_[7]
             infos_ = infos.split(";")
             for info in infos_:
-                if info.startswith("go_terms"):
+                #if info.startswith("go_terms"):
+                if info.startswith("kegg_category"):
                     go_terms_ = info.split("=")
                     go_terms_str = go_terms_[1]
                     go_terms = go_terms_str.split("|")
                     go_terms_list += go_terms
 
     go_terms_list_unique = list(set(go_terms_list))
+    go_terms_list_unique.sort()
     print(go_terms_list_unique, len(go_terms_list_unique))
 
 

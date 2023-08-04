@@ -6,20 +6,13 @@ import { RemoteFile } from "generic-filehandle";
 //import fetch from 'node-fetch'
 import { CHROMS } from "./chrom-utils";
 import { format } from "d3-format";
-import {
-  VCF_URL,
-  TBI_URL,
-  vcfRecordToJson,
-  parseLocation,
-  infoFieldMapping,
-  infoFieldMap,
-  availablePopulations,
-  availablePopulationValues,
-} from "./gene-data-utils";
+import { vcfRecordToJson, parseLocation } from "./gene-data-utils";
 
-const PAGE_SIZE = 50;
+import { GENE_VCF_URL, GENE_TBI_URL } from "./config";
 
-class GeneTable extends React.Component {
+const PAGE_SIZE = 30;
+
+export class GeneTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,6 +22,7 @@ class GeneTable extends React.Component {
       displayedVariants: [],
       tablePage: 0,
       filter: {},
+      showGoTerms: false,
     };
     this.variants = [];
     this.loadingVariantsCalled = false;
@@ -37,17 +31,11 @@ class GeneTable extends React.Component {
   componentDidMount() {
     this.nextPage = this.nextPage.bind(this);
     this.previousPage = this.previousPage.bind(this);
-    this.toggleFilter = this.toggleFilter.bind(this);
     this.filterChange = this.filterChange.bind(this);
-    this.toggleDetails = this.toggleDetails.bind(this);
+    this.toggleGoTerms = this.toggleGoTerms.bind(this);
 
     this.loadVariants();
   }
-
-  // componentDidUpdate() {
-  //   ReactTooltip.rebuild();
-  //   console.log("ss")
-  // }
 
   nextPage() {
     this.setState((prevState) => ({
@@ -61,24 +49,9 @@ class GeneTable extends React.Component {
     }));
   }
 
-  toggleFilter() {
+  toggleGoTerms() {
     this.setState((prevState) => ({
-      showFilter: !prevState.showFilter,
-    }));
-  }
-
-  toggleDetails(event) {
-    event.preventDefault();
-    const variantId = event.target.dataset.id;
-    const variants = this.state.displayedVariants;
-    variants.forEach((v) => {
-      if (v["id"] === variantId) {
-        v["showDetails"] = !v["showDetails"];
-      }
-    });
-
-    this.setState((prevState) => ({
-      displayedVariants: variants,
+      showGoTerms: !prevState.showGoTerms,
     }));
   }
 
@@ -97,12 +70,7 @@ class GeneTable extends React.Component {
     let variants = this.state.variants;
     if (filter["gene"] !== undefined) {
       variants = variants.filter((v) =>
-        v["gene_info"].includes(filter["gene"].toLowerCase())
-      );
-    }
-    if (filter["region"] !== undefined && filter["region"] !== "all") {
-      variants = variants.filter((v) =>
-        v["genomic_regions"].includes(filter["region"])
+        v["symbol"].toLowerCase().includes(filter["gene"].toLowerCase())
       );
     }
     if (filter["from"] !== undefined) {
@@ -136,8 +104,8 @@ class GeneTable extends React.Component {
     this.loadingVariantsCalled = true;
 
     this.vcfFile = new TabixIndexedFile({
-      filehandle: new RemoteFile(VCF_URL),
-      tbiFilehandle: new RemoteFile(TBI_URL),
+      filehandle: new RemoteFile(GENE_VCF_URL),
+      tbiFilehandle: new RemoteFile(GENE_TBI_URL),
     });
     const vcfHeader = this.vcfFile.getHeader(); // Promise
 
@@ -151,8 +119,9 @@ class GeneTable extends React.Component {
           chrom["length"],
           (line) => {
             const vcfRecord = tbiVCFParser.parseLine(line);
-            //console.log(vcfRecord);
-            this.variants.push(vcfRecordToJson(vcfRecord, chrom));
+            const vcfRecordJson = vcfRecordToJson(vcfRecord, chrom);
+            //console.log(vcfRecord, vcfRecordJson);
+            this.variants.push(vcfRecordJson);
           }
         );
         dataPromises.push(dataPromise);
@@ -164,38 +133,8 @@ class GeneTable extends React.Component {
           variants: this.variants,
           displayedVariants: this.variants,
         }));
-        //console.log(this.variants);
       });
     });
-  }
-
-  populationTableRow(variantInfos, key) {
-    const cols = [];
-    availablePopulations.forEach((pop) => {
-      const property = pop + "_" + key;
-      const info = variantInfos[property];
-
-      if (info !== undefined) {
-        let val = info[0];
-        if (
-          infoFieldMapping(property) &&
-          infoFieldMapping(property)["format"] &&
-          val !== 0
-        ) {
-          val = format(infoFieldMapping(property)["format"])(val);
-        }
-        cols.push(<td>{val}</td>);
-      } else {
-        cols.push(<td>-</td>);
-      }
-    });
-
-    return (
-      <tr>
-        <td>{availablePopulationValues[key]["title"]}</td>
-        {cols}
-      </tr>
-    );
   }
 
   render() {
@@ -218,113 +157,44 @@ class GeneTable extends React.Component {
     );
 
     variantsToDisplaySliced.forEach((variant, index) => {
-      const gene_info = [];
-      variant.gene_info_disp.forEach((gene) => {
-        gene_info.push(
-          <span className="badge bg-light text-muted d-inline-block me-1">
-            {gene}
-          </span>
+      const goTerms = [];
+      variant.goTerms.forEach((goTerm) => {
+        goTerms.push(
+          <div>
+            <span className="badge bg-light text-muted me-1">{goTerm}</span>
+          </div>
         );
       });
 
+      const kegg = [];
+      variant.keggCategory.forEach((k) => {
+        kegg.push(
+          <div>
+            <span className="badge bg-light text-muted me-1">{k}</span>
+          </div>
+        );
+      });
+
+      const deNovoWestPvalue =
+        variant.deNovoWestPvalue === 0 ? "-" : variant.deNovoWestPvalue;
+      const biallelicPvalue =
+        variant.biallelicPvalue === 0 ? "-" : variant.biallelicPvalue;
+
       variantRows.push(
-        <tr className={variant.showDetails ? "table-secondary" : ""}>
+        <tr>
+          <td>{variant.symbol}</td>
           <td>{variant.chrom}</td>
-          <td>{format(",.0f")(variant.start)}</td>
-          <td>{format(",.0f")(variant.end)}</td>
-          <td>{variant.length}</td>
-          <td>{variant.af}</td>
-          <td>{gene_info}</td>
-          <td>
-            <a
-              href="#"
-              className="link-primary"
-              data-id={variant.id}
-              onClick={this.toggleDetails}
-            >
-              Details
-            </a>
+          <td>{deNovoWestPvalue}</td>
+          <td>{biallelicPvalue}</td>
+          <td>{kegg}</td>
+          <td className={this.state.showGoTerms ? "" : "collapse"}>
+            {goTerms}
           </td>
         </tr>
       );
-      if (variant.showDetails) {
-        const generalInfos = [];
-        const properties = [];
-        for (const property in variant.info) {
-          properties.push(property);
-        }
-        //properties.sort();
-        properties.forEach((property) => {
-          if (
-            infoFieldMapping(property) &&
-            infoFieldMapping(property)["cat"] !== "general"
-          ) {
-            return;
-          }
-          const title = infoFieldMapping(property)
-            ? infoFieldMapping(property)["title"]
-            : property;
-          const desc = infoFieldMapping(property)
-            ? infoFieldMapping(property)["desc"]
-            : property;
-          let val = variant.info[property][0];
-          if (
-            infoFieldMapping(property) &&
-            infoFieldMapping(property)["format"] &&
-            val !== 0
-          ) {
-            val = format(infoFieldMapping(property)["format"])(val);
-          }
-          generalInfos.push(
-            <div className="col-md-6">
-              <strong>{title}:</strong> {val}
-            </div>
-          );
-        });
-
-        let populationFreqTable = (
-          <table className="table table-sm">
-            <thead>
-              <tr>
-                <th></th>
-                {availablePopulations.map((pop) => (
-                  <th>{pop}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(availablePopulationValues).map((key) => {
-                return this.populationTableRow(variant.info, key);
-              })}
-            </tbody>
-          </table>
-        );
-
-        variantRows.push(
-          <tr className="details-row">
-            <td colSpan={7} className="p-3">
-              <div className="row">{generalInfos}</div>
-              {/* <ReactTooltip place="top" type="dark" effect="solid" /> */}
-              <div className="mt-4 mb-2 fs-5">Population frequencies</div>
-
-              {populationFreqTable}
-            </td>
-          </tr>
-        );
-      }
     });
 
     const navButtons = [];
-    if (this.state.tablePage > 0) {
-      navButtons.push(
-        <button
-          className="btn btn-primary btn-sm mx-2"
-          onClick={this.previousPage}
-        >
-          Previous
-        </button>
-      );
-    }
 
     if (
       variantsToDisplay.length > PAGE_SIZE &&
@@ -337,9 +207,20 @@ class GeneTable extends React.Component {
       );
     }
 
-    let message = "No variants found";
+    if (this.state.tablePage > 0) {
+      navButtons.push(
+        <button
+          className="btn btn-primary btn-sm mx-2"
+          onClick={this.previousPage}
+        >
+          Previous
+        </button>
+      );
+    }
+
+    let message = "No genes found";
     if (variantsToDisplay.length > 0) {
-      message = `Displaying variants ${
+      message = `Displaying genes ${
         this.state.tablePage * PAGE_SIZE + 1
       }-${Math.min(
         (this.state.tablePage + 1) * PAGE_SIZE,
@@ -347,120 +228,71 @@ class GeneTable extends React.Component {
       )} of ${variantsToDisplay.length}`;
     }
 
-    // let legend = "";
-    // if(this.state.showLegend){
-    //   const legendItems = [];
-    //   Object.keys(infoFieldMap).forEach(key => {
-    //     legendItems.push(<div>
-    //       <div>{key}</div>
-    //       <div>{infoFieldMap[key]["desc"]}</div>
-    //     </div>);
-    //   })
-
-    //   legend = (
-    //     <div className="p-2">
-    //       {legendItems}
-    //     </div>
-    //   );
-    // }
-
     return (
       <div>
-        <h3 className="py-4">Browse variants</h3>
-
-        <div className="d-flex mb-2">
-          <div className="me-auto"></div>
-          <button
-            className="btn btn-primary me-auto btn-sm collapse"
-            onClick={this.toggleFilter}
-          >
-            Filter
-          </button>
-
-          <div className="pt-1 mx-2">{message}</div>
+        <div className="d-flex flex-row-reverse">
           {navButtons}
+          <div className="pt-1 mx-2 ">{message}</div>
         </div>
 
-        <div className="row pb-5">
-          <div className="col-md-3 col-xl-2">
-            <div className="small pt-1 text-muted">FILTER</div>
-            <div className="mt-1 p-3 bg-light">
-              <div className="mb-2">
-                <label
-                  htmlFor="filter-from"
-                  className="form-label small fw-bold"
-                >
-                  From
-                </label>
+        <div className="row pb-5 pt-4">
+          <div className="col-md-3">
+            <div className="small pt-1">FILTER</div>
+            <div className="mt-1 p-3 border">
+            <div >Gene</div>
+              <input
+                className="form-control"
+                id="filter-gene"
+                data-filtertype="gene"
+                placeholder="e.g. TNFRSF8"
+                onChange={this.filterChange}
+              />
+              <div className="mt-2">From</div>
+              <input
+                className="form-control"
+                id="filter-from"
+                placeholder="e.g. chr1:1000000"
+                data-filtertype="from"
+                onChange={this.filterChange}
+              />
+              <div className="mt-2">To</div>
+              <input
+                className="form-control"
+                id="filter-to"
+                placeholder="e.g. chr3:20000000"
+                data-filtertype="to"
+                onChange={this.filterChange}
+              />
+              
+              <div className="custom-control custom-checkbox mt-3">
                 <input
-                  className="form-control form-control-sm"
-                  id="filter-from"
-                  placeholder="e.g. chr1:1000000"
-                  data-filtertype="from"
-                  onChange={this.filterChange}
+                  type="checkbox"
+                  className="custom-control-input"
+                  id="customCheck1"
+                  onChange={this.toggleGoTerms}
                 />
-              </div>
-              <div className="mb-2">
-                <label htmlFor="filter-to" className="form-label small fw-bold">
-                  To
+                <label className="custom-control-label" htmlFor="customCheck1">
+                  Show GO terms
                 </label>
-                <input
-                  className="form-control form-control-sm"
-                  id="filter-to"
-                  placeholder="e.g. chr3:20000000"
-                  data-filtertype="to"
-                  onChange={this.filterChange}
-                />
-              </div>
-              <div className="mb-2">
-                <label
-                  htmlFor="filter-gene"
-                  className="form-label small fw-bold"
-                >
-                  Gene
-                </label>
-                <input
-                  className="form-control form-control-sm"
-                  id="filter-gene"
-                  data-filtertype="gene"
-                  placeholder="e.g. TNFRSF8"
-                  onChange={this.filterChange}
-                />
-              </div>
-              <div className="mb-2">
-                <label
-                  htmlFor="filter-region"
-                  className="form-label small fw-bold"
-                >
-                  Genomic region
-                </label>
-                <select
-                  className="form-select form-select-sm"
-                  id="filter-region"
-                  onChange={this.filterChange}
-                  data-filtertype="region"
-                  defaultValue={"all"}
-                >
-                  <option value="all">All</option>
-                  <option value="exon">exon</option>
-                  <option value="intron">intron</option>
-                  <option value="intergenic">intergenic</option>
-                </select>
               </div>
             </div>
           </div>
-          <div className="col-md-9 col-xl-10">
+          <div className="col-md-9">
             <div className="table-responsive-lg">
               <table className="table table-hover table-sm">
                 <thead className="sticky-table-header bg-white">
                   <tr>
-                    <th scope="col">Chrom.</th>
-                    <th scope="col">Start</th>
-                    <th scope="col">End</th>
-                    <th scope="col">Length</th>
-                    <th scope="col">Allele Frequency</th>
-                    <th scope="col">Gene info</th>
-                    <th scope="col"></th>
+                    <th scope="col">Gene</th>
+                    <th scope="col">Chromosome</th>
+                    <th scope="col">DeNovoWEST p-value</th>
+                    <th scope="col">Biallelic p-value</th>
+                    <th scope="col">KEGG category</th>
+                    <th
+                      scope="col"
+                      className={this.state.showGoTerms ? "" : "collapse"}
+                    >
+                      GO terms
+                    </th>
                   </tr>
                 </thead>
                 <tbody>{variantRows}</tbody>
@@ -472,5 +304,3 @@ class GeneTable extends React.Component {
     );
   }
 }
-
-export default GeneTable;

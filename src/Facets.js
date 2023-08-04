@@ -2,6 +2,8 @@
 
 import React from "react";
 import { GeneSearchBox } from "./GeneSearchBox";
+import Select from "react-select";
+//import makeAnimated from 'react-select/animated';
 
 // VEP consequence levels
 const CL_HIGH = "High";
@@ -9,18 +11,98 @@ const CL_MODERATE = "Moderate";
 const CL_LOW = "Low";
 const CL_MODIFIER = "Modifier";
 
+const KEGG_CATEGORY_OPTIONS = [
+  { value: "amino_acid_metabolism", label: "Amino acid metabolism" },
+  { value: "cancer", label: "Cancer" },
+  {
+    value: "carbohydrate_energy_metabolism",
+    label: "Carbohydrate energy metabolism",
+  },
+  { value: "cell_cell_interaction", label: "Cell-cell interaction" },
+  { value: "cell_cycle", label: "Cell cycle" },
+  { value: "cell_motility", label: "Cell motility" },
+  { value: "circadian_rhythm", label: "Circadian rhythm" },
+  {
+    value: "cofactor_and_vitamin_metabolism",
+    label: "Cofactor and vitamin metabolism",
+  },
+  {
+    value: "development_and_regeneration",
+    label: "Development and regeneration",
+  },
+  { value: "dna_replication_repair", label: "DNA replication repair" },
+  {
+    value: "drug_targets_nuclear_receptors",
+    label: "Drug targets nuclear receptors",
+  },
+  {
+    value: "endocrine_and_metabolic_disease",
+    label: "Endocrine and metabolic disease",
+  },
+  { value: "endocrine_system", label: "Endocrine system" },
+  { value: "immune_process", label: "Immune process" },
+  { value: "lipid_metabolism", label: "Lipid metabolism" },
+  { value: "membrane_transport", label: "Membrane transport" },
+  { value: "nervous_system", label: "Nervous system" },
+  { value: "neurodegenerative_disease", label: "Neurodegenerative disease" },
+  { value: "nucleotide_metabolism", label: "Nucleotide metabolism" },
+  { value: "other_metabolism", label: "Other metabolism" },
+  {
+    value: "protein_folding_sorting_degradation",
+    label: "Protein folding sorting degradation",
+  },
+  { value: "sensory_system", label: "Sensory system" },
+  { value: "signal_transduction", label: "Signal transduction" },
+  { value: "substance_dependence", label: "Substance dependence" },
+  { value: "transcription", label: "Transcription" },
+  { value: "translation", label: "Translation" },
+  { value: "transport_and_catabolism", label: "Transport and catabolism" },
+];
+
 export class Facets extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       activeConsequenceLevels: [CL_HIGH, CL_MODERATE, CL_LOW, CL_MODIFIER],
+      selectedKeggCategory: null,
     };
 
     this.changeActiveConsequenceLevels =
       this.changeActiveConsequenceLevels.bind(this);
+    this.exportDisplay = this.exportDisplay.bind(this);
   }
 
   componentDidMount() {}
+
+  handleKeggChange = (selectedKeggCategory) => {
+    this.setState({ selectedKeggCategory }, () => {
+      if (!window.hgc) {
+        return;
+      }
+      const hgc = window.hgc.current;
+      const viewconfCohort = hgc.api.getViewConfig();
+      viewconfCohort.views[1].tracks.top.forEach((track) => {
+        if (track.type === "cohort") {
+          const newFilter = [];
+          track.options["filter"].forEach((filter) => {
+            if (filter["field"] !== "kegg_category") {
+              newFilter.push(filter);
+            }
+          });
+          if(this.state.selectedKeggCategory && this.state.selectedKeggCategory.length > 0){
+            const keggFilter = {
+              field: "kegg_category",
+              operator: "has_one_of",
+              target: this.state.selectedKeggCategory.map(c => c.value),
+            };
+            newFilter.push(keggFilter);
+          }
+          track.options["filter"] = newFilter;
+        }
+      });
+      hgc.api.setViewConfig(viewconfCohort);
+    });
+  };
 
   applyCaddFilter(event, minMax) {
     const val = event.target.value;
@@ -70,7 +152,7 @@ export class Facets extends React.PureComponent {
               const acl = this.state.activeConsequenceLevels.map((cl) =>
                 cl.toUpperCase()
               );
-               track.options["filter"].forEach((filter) => {
+              track.options["filter"].forEach((filter) => {
                 if (filter["field"] === "level_most_severe_consequence") {
                   filter["target"] = acl;
                 }
@@ -84,8 +166,27 @@ export class Facets extends React.PureComponent {
     );
   }
 
+  exportDisplay() {
+    const hgc = window.hgc.current;
+    if (!hgc) {
+      console.warn("Higlass component not found.");
+      return;
+    }
+    const svg = hgc.api.exportAsSvg();
+
+    var element = document.createElement("a");
+    element.setAttribute(
+      "href",
+      "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg)
+    );
+    element.setAttribute("download", "cohort.svg");
+    element.click();
+  }
+
   render() {
     const consequenceLevels = [CL_HIGH, CL_MODERATE, CL_LOW, CL_MODIFIER];
+
+    const { selectedKeggCategory } = this.state;
 
     return (
       <React.Fragment>
@@ -123,7 +224,17 @@ export class Facets extends React.PureComponent {
               </div>
             </div>
 
-            <div className="">Consequence levels (VEP)</div>
+            <div className="">KEGG category</div>
+            <Select
+              value={selectedKeggCategory}
+              onChange={this.handleKeggChange}
+              options={KEGG_CATEGORY_OPTIONS}
+              closeMenuOnSelect={false}
+              isMulti
+              placeholder="Select multiple..."
+            />
+
+            <div className="mt-3">Consequence levels (VEP)</div>
             <div className="row">
               {consequenceLevels.map((cl) => (
                 <div className="col-sm-6">
@@ -133,17 +244,30 @@ export class Facets extends React.PureComponent {
                       className="form-check-input"
                       id={"cb_" + cl}
                       value={cl}
-                      onChange={this.changeActiveConsequenceLevels} 
-                      checked={this.state.activeConsequenceLevels.includes(cl) ? "checked" : ""}
+                      onChange={this.changeActiveConsequenceLevels}
+                      checked={
+                        this.state.activeConsequenceLevels.includes(cl)
+                          ? "checked"
+                          : ""
+                      }
                     />
                     <label className="form-check-label" htmlFor={"cb_" + cl}>
                       {cl}
                     </label>
                   </div>
-
-                 
                 </div>
               ))}
+            </div>
+
+            <div className="d-block mb-1 mt-3">
+              <button
+                type="button"
+                className="btn btn-primary btn-sm btn-block"
+                onClick={this.exportDisplay}
+              >
+                <i className="icon icon-download icon-sm fas mr-1"></i>
+                Export
+              </button>
             </div>
           </div>
         </div>
