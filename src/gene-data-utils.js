@@ -16,8 +16,11 @@ export const vcfRecordToJson = (vcfRecord, chrom) => {
   const goTerms = info["go_terms"]
     ? info["go_terms"][0].split("|").map((k) => k.replaceAll("_", " "))
     : [];
-  const keggCategory = info["kegg_category"]
+  const keggCategoryFormatted = info["kegg_category"]
     ? info["kegg_category"][0].split("|").map((k) => k.replaceAll("_", " "))
+    : [];
+  const keggCategory = info["kegg_category"]
+    ? info["kegg_category"][0].split("|")
     : [];
 
   return {
@@ -31,6 +34,7 @@ export const vcfRecordToJson = (vcfRecord, chrom) => {
     deNovoWestPvalue: deNovoWestPvalue,
     biallelicPvalue: biallelicPvalue,
     goTerms: goTerms,
+    keggCategoryFormatted: keggCategoryFormatted,
     keggCategory: keggCategory,
   };
 };

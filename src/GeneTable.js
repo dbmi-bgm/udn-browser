@@ -5,12 +5,15 @@ import VCF from "@gmod/vcf";
 import { RemoteFile } from "generic-filehandle";
 //import fetch from 'node-fetch'
 import { CHROMS } from "./chrom-utils";
+import Select from "react-select";
 import { format } from "d3-format";
 import { vcfRecordToJson, parseLocation } from "./gene-data-utils";
 
-import { GENE_VCF_URL, GENE_TBI_URL } from "./config";
+import { GENE_VCF_URL, GENE_TBI_URL, KEGG_CATEGORY_OPTIONS } from "./config";
 
 const PAGE_SIZE = 30;
+const DE_NOVO_WEST_P = "deNovoWestPvalue";
+const BIALLELEIC = "biallelicPvalue";
 
 export class GeneTable extends React.Component {
   constructor(props) {
@@ -22,40 +25,49 @@ export class GeneTable extends React.Component {
       displayedVariants: [],
       tablePage: 0,
       filter: {},
+      sortBy: DE_NOVO_WEST_P,
       showGoTerms: false,
+      selectedKeggCategory: null,
     };
     this.variants = [];
     this.loadingVariantsCalled = false;
   }
 
   componentDidMount() {
-    this.nextPage = this.nextPage.bind(this);
-    this.previousPage = this.previousPage.bind(this);
-    this.filterChange = this.filterChange.bind(this);
-    this.toggleGoTerms = this.toggleGoTerms.bind(this);
-
     this.loadVariants();
   }
 
-  nextPage() {
+  nextPage = () => {
     this.setState((prevState) => ({
       tablePage: prevState.tablePage + 1,
     }));
-  }
+  };
 
-  previousPage() {
+  previousPage = () => {
     this.setState((prevState) => ({
       tablePage: prevState.tablePage - 1,
     }));
-  }
+  };
 
-  toggleGoTerms() {
+  handleKeggChange = (selectedKeggCategory) => {
+    this.setState((prevState) => ({
+      selectedKeggCategory: selectedKeggCategory,
+    }));
+  };
+
+  toggleGoTerms = () => {
     this.setState((prevState) => ({
       showGoTerms: !prevState.showGoTerms,
     }));
-  }
+  };
 
-  filterChange(event) {
+  sortTable = (event) => {
+    this.setState((prevState) => ({
+      sortBy: event.target.dataset.col,
+    }));
+  };
+
+  filterChange = (event) => {
     const filtertype = event.target.dataset.filtertype;
     const filter = this.state.filter;
 
@@ -64,7 +76,7 @@ export class GeneTable extends React.Component {
       delete filter[filtertype];
     }
     this.applyFilter(filter);
-  }
+  };
 
   applyFilter(filter) {
     let variants = this.state.variants;
@@ -148,9 +160,21 @@ export class GeneTable extends React.Component {
     }
 
     const variantRows = [];
-    const variantsToDisplay = this.state.displayedVariants.sort(
-      (a, b) => a.posAbs - b.posAbs
-    );
+    console.log(this.state.selectedKeggCategory);
+    const selectedKeggCategories = this.state.selectedKeggCategory
+      ? this.state.selectedKeggCategory.map((c) => c.value)
+      : [];
+    const variantsToDisplay = this.state.displayedVariants
+      .filter((v) => {
+        if (selectedKeggCategories.length === 0) {
+          return true;
+        }
+        const keggIntersect = v.keggCategory.filter((c) =>
+          selectedKeggCategories.includes(c)
+        );
+        return keggIntersect.length > 0;
+      })
+      .sort((a, b) => b[this.state.sortBy] - a[this.state.sortBy]);
     const variantsToDisplaySliced = variantsToDisplay.slice(
       this.state.tablePage * PAGE_SIZE,
       (this.state.tablePage + 1) * PAGE_SIZE
@@ -167,7 +191,7 @@ export class GeneTable extends React.Component {
       });
 
       const kegg = [];
-      variant.keggCategory.forEach((k) => {
+      variant.keggCategoryFormatted.forEach((k) => {
         kegg.push(
           <div>
             <span className="badge bg-light text-muted me-1">{k}</span>
@@ -239,7 +263,7 @@ export class GeneTable extends React.Component {
           <div className="col-md-3">
             <div className="small pt-1">FILTER</div>
             <div className="mt-1 p-3 border">
-            <div >Gene</div>
+              <div>Gene</div>
               <input
                 className="form-control"
                 id="filter-gene"
@@ -263,7 +287,7 @@ export class GeneTable extends React.Component {
                 data-filtertype="to"
                 onChange={this.filterChange}
               />
-              
+
               <div className="custom-control custom-checkbox mt-3">
                 <input
                   type="checkbox"
@@ -275,6 +299,16 @@ export class GeneTable extends React.Component {
                   Show GO terms
                 </label>
               </div>
+
+              <div className="mt-2">KEGG category</div>
+              <Select
+                value={this.state.selectedKeggCategory}
+                onChange={this.handleKeggChange}
+                options={KEGG_CATEGORY_OPTIONS}
+                closeMenuOnSelect={false}
+                isMulti
+                placeholder="Select multiple..."
+              />
             </div>
           </div>
           <div className="col-md-9">
@@ -283,9 +317,23 @@ export class GeneTable extends React.Component {
                 <thead className="sticky-table-header bg-white">
                   <tr>
                     <th scope="col">Gene</th>
-                    <th scope="col">Chromosome</th>
-                    <th scope="col">DeNovoWEST p-value</th>
-                    <th scope="col">Biallelic p-value</th>
+                    <th scope="col">Chrom.</th>
+                    <th scope="col">
+                      DeNovoWEST p-value{" "}
+                      <i
+                        className="fa fa-sort-amount-desc pointer gene-table-sort-symbol pl-1"
+                        onClick={this.sortTable}
+                        data-col={DE_NOVO_WEST_P}
+                      ></i>
+                    </th>
+                    <th scope="col">
+                      Biallelic p-value{" "}
+                      <i
+                        className="fa fa-sort-amount-desc pointer gene-table-sort-symbol pl-1"
+                        onClick={this.sortTable}
+                        data-col={BIALLELEIC}
+                      ></i>
+                    </th>
                     <th scope="col">KEGG category</th>
                     <th
                       scope="col"
