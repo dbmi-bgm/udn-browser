@@ -252,6 +252,20 @@ export class GeneTable extends React.Component {
       )} of ${variantsToDisplay.length}`;
     }
 
+    let sortSymbolClassDeNovo =
+      "fa fa-sort-amount-desc pointer gene-table-sort-symbol pl-1";
+    sortSymbolClassDeNovo =
+      this.state.sortBy === DE_NOVO_WEST_P
+        ? sortSymbolClassDeNovo + " active"
+        : sortSymbolClassDeNovo;
+
+    let sortSymbolClassBiallelic =
+      "fa fa-sort-amount-desc pointer gene-table-sort-symbol pl-1";
+    sortSymbolClassBiallelic =
+      this.state.sortBy === BIALLELEIC
+        ? sortSymbolClassBiallelic + " active"
+        : sortSymbolClassBiallelic;
+
     return (
       <div>
         <div className="d-flex flex-row-reverse">
@@ -319,20 +333,24 @@ export class GeneTable extends React.Component {
                     <th scope="col">Gene</th>
                     <th scope="col">Chrom.</th>
                     <th scope="col">
-                      DeNovoWEST p-value{" "}
-                      <i
-                        className="fa fa-sort-amount-desc pointer gene-table-sort-symbol pl-1"
-                        onClick={this.sortTable}
-                        data-col={DE_NOVO_WEST_P}
-                      ></i>
+                      <div className="text-nowrap">
+                        DeNovoWEST p-value{" "}
+                        <i
+                          className={sortSymbolClassDeNovo}
+                          onClick={this.sortTable}
+                          data-col={DE_NOVO_WEST_P}
+                        ></i>
+                      </div>
                     </th>
                     <th scope="col">
-                      Biallelic p-value{" "}
-                      <i
-                        className="fa fa-sort-amount-desc pointer gene-table-sort-symbol pl-1"
-                        onClick={this.sortTable}
-                        data-col={BIALLELEIC}
-                      ></i>
+                      <div className="text-nowrap">
+                        Biallelic p-value{" "}
+                        <i
+                          className={sortSymbolClassBiallelic}
+                          onClick={this.sortTable}
+                          data-col={BIALLELEIC}
+                        ></i>
+                      </div>
                     </th>
                     <th scope="col">KEGG category</th>
                     <th

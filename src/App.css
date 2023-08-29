@@ -12,6 +12,9 @@ body {
 .gene-table-sort-symbol:hover{
   color:#6b6b6b
 }
+.gene-table-sort-symbol.active{
+  color:#6b6b6b
+}
 
 .App {
   text-align: center;

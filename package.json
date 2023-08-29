@@ -20,7 +20,7 @@
     "higlass-orthologs": "^0.2.4",
     "higlass-clinvar": "^0.2.5",
     "higlass-gnomad": "^0.2.2",
-    "higlass-cohort": "0.4.0-beta.1",
+    "higlass-cohort": "0.4.0-beta.3",
     "higlass-bigwig-datafetcher": "^0.2.0",
     "pixi.js": "^5.2.4",
     "react": "^17.0.2",

@@ -5,6 +5,17 @@ import { GeneSearchBox } from "./GeneSearchBox";
 import Select from "react-select";
 import { KEGG_CATEGORY_OPTIONS } from "./config";
 //import makeAnimated from 'react-select/animated';
+import viewConfigClinvar from "./viewConfig.clinvar.json";
+import viewConfigTranscripts from "./viewConfig.transcripts.json";
+import viewConfigGnomad from "./viewConfig.gnomad.json";
+import viewConfigOrthologs from "./viewConfig.orthologs.json";
+
+const VIEW_CONFIGS = {
+  clinvar: viewConfigClinvar.viewConfigClinvar,
+  transcripts: viewConfigTranscripts.viewConfigTranscripts,
+  gnomad: viewConfigGnomad.viewConfigGnomad,
+  orthologs: viewConfigOrthologs.viewConfigOrthologs,
+};
 
 // VEP consequence levels
 const CL_HIGH = "High";
@@ -18,11 +29,11 @@ export class Facets extends React.PureComponent {
     this.state = {
       activeConsequenceLevels: [CL_HIGH, CL_MODERATE, CL_LOW, CL_MODIFIER],
       selectedKeggCategory: null,
+      isTranscriptsTrackVisible: false,
+      isClinvarTrackVisible: false,
+      isGnomadTrackVisible: false,
+      isOrthologsTrackVisible: false,
     };
-
-    this.changeActiveConsequenceLevels =
-      this.changeActiveConsequenceLevels.bind(this);
-    this.exportDisplay = this.exportDisplay.bind(this);
   }
 
   componentDidMount() {}
@@ -42,11 +53,14 @@ export class Facets extends React.PureComponent {
               newFilter.push(filter);
             }
           });
-          if(this.state.selectedKeggCategory && this.state.selectedKeggCategory.length > 0){
+          if (
+            this.state.selectedKeggCategory &&
+            this.state.selectedKeggCategory.length > 0
+          ) {
             const keggFilter = {
               field: "kegg_category",
               operator: "has_one_of",
-              target: this.state.selectedKeggCategory.map(c => c.value),
+              target: this.state.selectedKeggCategory.map((c) => c.value),
             };
             newFilter.push(keggFilter);
           }
@@ -55,6 +69,65 @@ export class Facets extends React.PureComponent {
       });
       hgc.api.setViewConfig(viewconfCohort);
     });
+  };
+
+  togglePluginTrack = (event) => {
+    const clickedTrackType = event.target.value;
+    const isTrackAdded = event.target.checked;
+
+    this.setState(
+      {
+        isTranscriptsTrackVisible:
+          clickedTrackType === "transcripts"
+            ? !this.state.isTranscriptsTrackVisible
+            : this.state.isTranscriptsTrackVisible,
+        isClinvarTrackVisible:
+          clickedTrackType === "clinvar"
+            ? !this.state.isClinvarTrackVisible
+            : this.state.isClinvarTrackVisible,
+        isGnomadTrackVisible:
+          clickedTrackType === "gnomad"
+            ? !this.state.isGnomadTrackVisible
+            : this.state.isGnomadTrackVisible,
+        isOrthologsTrackVisible:
+          clickedTrackType === "orthologs"
+            ? !this.state.isOrthologsTrackVisible
+            : this.state.isOrthologsTrackVisible,
+      },
+      () => {
+        if (!window.hgc) {
+          return;
+        }
+        const hgc = window.hgc.current;
+        const viewconfCohort = hgc.api.getViewConfig();
+        const existingTracks = viewconfCohort.views[1].tracks.top;
+        if (isTrackAdded) {
+          const relevantViewConf = VIEW_CONFIGS[clickedTrackType];
+          const newTracks = relevantViewConf.views[0].tracks.top;
+          existingTracks.push.apply(existingTracks, newTracks);
+        } else {
+          const newTracks = [];
+          existingTracks.forEach((track) => {
+            if (!track.uid.includes(clickedTrackType)) {
+              newTracks.push(track);
+            }
+          });
+          viewconfCohort.views[1].tracks.top = newTracks;
+        }
+        // hgc.api.setViewConfig(viewconfCohort).then(() => {
+        //   viewconfCohort.views[1].tracks.top.forEach((track) =>{
+        //     if (track.uid === "transcripts_annotation") {
+        //       track["height"] = 90;
+        //       console.log(track, track["height"]);
+        //     }
+        //   });
+        //   console.log(viewconfCohort);
+        //   hgc.api.setViewConfig(viewconfCohort);
+        // });
+        hgc.api.setViewConfig(viewconfCohort);
+        hgc.adjustLayoutToTrackSizes(viewconfCohort.views[1]);
+      }
+    );
   };
 
   applyCaddFilter(event, minMax) {
@@ -80,7 +153,7 @@ export class Facets extends React.PureComponent {
     }
   }
 
-  changeActiveConsequenceLevels(event) {
+  changeActiveConsequenceLevels = (event) => {
     const clickedConsequenceLevels = event.target.value;
     const activeConsequenceLevels = [...this.state.activeConsequenceLevels];
     const index = activeConsequenceLevels.indexOf(clickedConsequenceLevels);
@@ -117,9 +190,9 @@ export class Facets extends React.PureComponent {
         }
       }
     );
-  }
+  };
 
-  exportDisplay() {
+  exportDisplay = () => {
     const hgc = window.hgc.current;
     if (!hgc) {
       console.warn("Higlass component not found.");
@@ -134,7 +207,7 @@ export class Facets extends React.PureComponent {
     );
     element.setAttribute("download", "cohort.svg");
     element.click();
-  }
+  };
 
   render() {
     const consequenceLevels = [CL_HIGH, CL_MODERATE, CL_LOW, CL_MODIFIER];
@@ -149,6 +222,67 @@ export class Facets extends React.PureComponent {
               <small>NAVIGATION & DISPLAY</small>
             </div>
             <GeneSearchBox />
+            <div className="form-check mt-3">
+              <input
+                type="checkbox"
+                id="toggle-transcripts-check"
+                className="form-check-input"
+                value="transcripts"
+                onChange={this.togglePluginTrack}
+                checked={this.state.isTranscriptsTrackVisible ? "checked" : ""}
+              />
+              <label
+                className="form-check-label"
+                htmlFor="toggle-transcripts-check"
+              >
+                Show gene transcripts
+              </label>
+            </div>
+            <div className="form-check mt-2">
+              <input
+                type="checkbox"
+                id="toggle-clinvar-check"
+                className="form-check-input"
+                value="clinvar"
+                onChange={this.togglePluginTrack}
+                checked={this.state.isClinvarTrackVisible ? "checked" : ""}
+              />
+              <label
+                className="form-check-label"
+                htmlFor="toggle-clinvar-check"
+              >
+                Show Clinvar annotations
+              </label>
+            </div>
+            <div className="form-check mt-2">
+              <input
+                type="checkbox"
+                id="toggle-gnomad-check"
+                className="form-check-input"
+                value="gnomad"
+                onChange={this.togglePluginTrack}
+                checked={this.state.isGnomadTrackVisible ? "checked" : ""}
+              />
+              <label className="form-check-label" htmlFor="toggle-gnomad-check">
+                Show GnomAD allele frequencies
+              </label>
+            </div>
+            <div className="form-check mt-2">
+              <input
+                type="checkbox"
+                id="toggle-orthologs-check"
+                className="form-check-input"
+                value="orthologs"
+                onChange={this.togglePluginTrack}
+                checked={this.state.isOrthologsTrackVisible ? "checked" : ""}
+              />
+              <label
+                className="form-check-label"
+                htmlFor="toggle-orthologs-check"
+              >
+                Show orthologs
+              </label>
+            </div>
 
             <div className="d-block bg-light px-2 mb-1 mt-3">
               <small>VARIANT LEVEL FILTERING</small>

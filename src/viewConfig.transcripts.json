@@ -1,0 +1,119 @@
+{
+  "viewConfigTranscripts": {
+    "views": [
+      {
+        "uid": "ab",
+        "layout": {
+          "h": 20,
+          "w": 12,
+          "x": 0,
+          "y": 3
+        },
+        "tracks": {
+          "top": [
+            {
+              "uid": "emptytrack_transcripts",
+              "type": "empty",
+              "width": 568,
+              "height": 10,
+              "options": {}
+            },
+            {
+              "uid": "texttrack_transcripts",
+              "type": "text",
+              "width": 568,
+              "height": 20,
+              "server": "https://cgap-higlass.com/api/v1",
+              "options": {
+                "text": "Transcripts",
+                "align": "left",
+                "offsetY": 4,
+                "fontSize": 11,
+                "textColor": "#333333",
+                "fontFamily": "Arial",
+                "fontWeight": "normal",
+                "backgroundColor": "#ededed"
+              }
+            },
+            {
+              "uid": "transcripts_annotation",
+              "type": "horizontal-transcripts",
+              "width": 768,
+              "height": 110,
+              "server": "https://cgap-higlass.com/api/v1",
+              "options": {
+                "name": "Gene transcripts",
+                "fontSize": 9,
+                "maxTexts": 100,
+                "utrColor": "#C0EAAF",
+                "minHeight": 24,
+                "fontFamily": "Helvetica",
+                "sequenceData": {
+                  "type": "fasta",
+                  "faiUrl": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.fa.fai",
+                  "fastaUrl": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.fa",
+                  "chromSizesUrl": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.mod.chrom.sizes"
+                },
+                "labelFontColor": "#222222",
+                "startCollapsed": false,
+                "plusStrandColor": "#bdbfff",
+                "minusStrandColor": "#fabec2",
+                "transcriptHeight": 12,
+                "transcriptSpacing": 2,
+                "mousePositionColor": "#000000",
+                "trackHeightAdjustment": "automatic",
+                "showToggleTranscriptsButton": true,
+                "labelBackgroundPlusStrandColor": "#e9e9e9",
+                "labelBackgroundMinusStrandColor": "#e9e9e9",
+                "labelStrokePlusStrandColor": "#999999",
+                "labelStrokeMinusStrandColor": "#999999",
+                "backgroundColor": "#ffffff"
+              },
+              "tilesetUid": "transcripts_hg38"
+            }
+          ],
+          "left": [],
+          "right": [],
+          "whole": [],
+          "bottom": [],
+          "center": [],
+          "gallery": []
+        },
+        "chromInfoPath": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.mod.chrom.sizes",
+        "initialXDomain": [
+          1543047.040684278,
+          1549714.2497034417
+        ],
+        "initialYDomain": [
+          1350227946.4736395,
+          1350227946.4736395
+        ],
+        "genomePositionSearchBox": {
+          "visible": true,
+          "chromInfoId": "hg38",
+          "autocompleteId": "gene_annotation_hg38",
+          "chromInfoServer": "https://cgap-higlass.com/api/v1",
+          "autocompleteServer": "https://cgap-higlass.com/api/v1"
+        }
+      }
+    ],
+    "editable": true,
+    "zoomFixed": false,
+    "zoomLocks": {
+      "locksByViewUid": {},
+      "locksDict": {}
+    },
+    "exportViewUrl": "/api/v1/viewconfs",
+    "locationLocks": {
+      "locksByViewUid": {},
+      "locksDict": {}
+    },
+    "valueScaleLocks": {
+      "locksByViewUid": {},
+      "locksDict": {}
+    },
+    "trackSourceServers": [
+      "https://cgap-higlass.com/api/v1"
+    ]
+  }
+}

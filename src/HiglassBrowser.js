@@ -10,6 +10,7 @@ import { default as TextTrack } from "higlass-text/es/TextTrack";
 import { default as OrthologsTrack } from "higlass-orthologs/es/OrthologsTrack";
 import { default as GnomadTrack } from "higlass-gnomad/es/GnomadTrack";
 import { default as CohortTrack } from "higlass-cohort/es/CohortTrack";
+import { default as GeneListTrack } from 'higlass-cohort/es/GeneListTrack';
 import { BigwigDataFetcher } from "higlass-bigwig-datafetcher";
 import viewConfig from "./viewConfig.json";
 
@@ -19,11 +20,6 @@ export class HiglassBrowser extends React.PureComponent {
     this.hgc = React.createRef();
     window.hgc = this.hgc;
     this.viewConfig = viewConfig.viewConfig;
-    higlassRegister({
-      name: "SequenceTrack",
-      track: SequenceTrack,
-      config: SequenceTrack.config,
-    });
     higlassRegister({
       name: "SequenceTrack",
       track: SequenceTrack,
@@ -58,6 +54,11 @@ export class HiglassBrowser extends React.PureComponent {
       name: "CohortTrack",
       track: CohortTrack,
       config: CohortTrack.config,
+    });
+    higlassRegister({
+      name: "GeneListTrack",
+      track: GeneListTrack,
+      config: GeneListTrack.config,
     });
     higlassRegister(
       {

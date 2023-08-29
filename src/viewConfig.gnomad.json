@@ -1,0 +1,178 @@
+{
+  "viewConfigGnomad": {
+    "views": [
+      {
+        "uid": "ab",
+        "layout": {
+          "h": 20,
+          "w": 12,
+          "x": 0,
+          "y": 3
+        },
+        "tracks": {
+          "top": [
+            {
+              "uid": "emptytrack_gnomad",
+              "type": "empty",
+              "width": 568,
+              "height": 10,
+              "options": {}
+            },
+            {
+              "uid": "texttrack_gnomad",
+              "type": "text",
+              "width": 568,
+              "height": 20,
+              "server": "https://cgap-higlass.com/api/v1",
+              "options": {
+                "text": "gnomAD (allele frequencies)",
+                "align": "left",
+                "offsetY": 4,
+                "fontSize": 11,
+                "textColor": "#333333",
+                "fontFamily": "Arial",
+                "fontWeight": "normal",
+                "backgroundColor": "#ededed"
+              }
+            },
+            {
+              "uid": "emptytrack_gnomad2",
+              "type": "empty",
+              "width": 568,
+              "height": 7,
+              "options": {}
+            },
+            {
+              "uid": "coverage_gnomad",
+              "type": "bar",
+              "width": 768,
+              "height": 45,
+              "server": "https://cgap-higlass.com/api/v1",
+              "options": {
+                "name": "gnomAD - median coverage",
+                "align": "bottom",
+                "barOpacity": 1,
+                "barFillColor": "grey",
+                "valueScaling": "linear",
+                "labelPosition": "topLeft",
+                "valueScaleMax": 60,
+                "valueScaleMin": 0,
+                "labelTopMargin": 0,
+                "labelLeftMargin": 0,
+                "labelRightMargin": 0,
+                "labelTextOpacity": 0.4,
+                "trackBorderColor": "black",
+                "trackBorderWidth": 0,
+                "labelBottomMargin": 0,
+                "labelShowAssembly": false,
+                "axisLabelFormatting": "scientific",
+                "labelShowResolution": false,
+                "axisPositionHorizontal": "right",
+                "labelColor": "[glyph-color]"
+              },
+              "filetype": "bigwig",
+              "tilesetUid": "gnomad_coverage"
+            },
+            {
+              "uid": "emptytrack_gnomad3",
+              "type": "empty",
+              "width": 568,
+              "height": 7,
+              "options": {}
+            },
+            {
+              "uid": "gnomad",
+              "data": {
+                "type": "vcf",
+                "tbiUrl": "https://cgap-higlass.s3.amazonaws.com/gnomad/gnomad.higlass.v3.1.sites.vcf.gz.tbi",
+                "vcfUrl": "https://cgap-higlass.s3.amazonaws.com/gnomad/gnomad.higlass.v3.1.sites.vcf.gz",
+                "chromSizesUrl": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.mod.chrom.sizes",
+                "maxTileWidth": 200000
+              },
+              "type": "gnomad",
+              "width": 768,
+              "height": 200,
+              "options": {
+                "variantHeight": 12,
+                "showMousePosition": false,
+                "colorScale": [
+                  [
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.6
+                  ],
+                  [
+                    0.6,
+                    0.6,
+                    0,
+                    0.7
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0.55
+                  ],
+                  [
+                    0.68,
+                    0.23,
+                    0.87,
+                    0.8
+                  ],
+                  [
+                    0.27,
+                    0.64,
+                    0.09,
+                    0.8
+                  ]
+                ],
+                "maxTileWidth": 200000
+              }
+            }
+          ],
+          "left": [],
+          "right": [],
+          "whole": [],
+          "bottom": [],
+          "center": [],
+          "gallery": []
+        },
+        "chromInfoPath": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.mod.chrom.sizes",
+        "initialXDomain": [
+          1543047.040684278,
+          1549714.2497034417
+        ],
+        "initialYDomain": [
+          1350227946.4736395,
+          1350227946.4736395
+        ],
+        "genomePositionSearchBox": {
+          "visible": true,
+          "chromInfoId": "hg38",
+          "autocompleteId": "gene_annotation_hg38",
+          "chromInfoServer": "https://cgap-higlass.com/api/v1",
+          "autocompleteServer": "https://cgap-higlass.com/api/v1"
+        }
+      }
+    ],
+    "editable": true,
+    "zoomFixed": false,
+    "zoomLocks": {
+      "locksByViewUid": {},
+      "locksDict": {}
+    },
+    "exportViewUrl": "/api/v1/viewconfs",
+    "locationLocks": {
+      "locksByViewUid": {},
+      "locksDict": {}
+    },
+    "valueScaleLocks": {
+      "locksByViewUid": {},
+      "locksDict": {}
+    },
+    "trackSourceServers": [
+      "https://cgap-higlass.com/api/v1"
+    ]
+  }
+}
