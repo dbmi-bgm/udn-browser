@@ -10,7 +10,7 @@ module.exports = function override(config, env) {
         assert: require.resolve("assert"),
         util: require.resolve("util"),
     }
-    config.resolve.extensions = [...config.resolve.extensions, ".ts", ".js"]
+    config.resolve.extensions = [...config.resolve.extensions, ".ts", ".js", ".jsx"]
     config.plugins = [
         ...config.plugins,
         new webpack.ProvidePlugin({

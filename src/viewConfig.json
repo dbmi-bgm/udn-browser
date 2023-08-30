@@ -1,0 +1,700 @@
+{
+  "viewConfig": {
+    "views": [
+      {
+        "uid": "aa",
+        "layout": {
+          "h": 3,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "tracks": {
+          "top": [
+            {
+              "uid": "chromlabels-overview",
+              "type": "chromosome-labels",
+              "width": 811,
+              "height": 30,
+              "server": "https://cgap-higlass.com/api/v1",
+              "options": {
+                "color": "#808080",
+                "stroke": "#ffffff",
+                "fontSize": 12,
+                "fontIsLeftAligned": false,
+                "showMousePosition": false,
+                "mousePositionColor": "#000000",
+                "reverseOrientation": false
+              },
+              "filetype": "chromsizes-tsv",
+              "tilesetUid": "chromsizes_hg38"
+            },
+            {
+              "uid": "FkGY-Yv9T8avNXljXklukw",
+              "type": "combined",
+              "width": 568,
+              "height": 55,
+              "options": {},
+              "contents": [
+                {
+                  "uid": "FocNIVsfRVWMRzfmHfncsQ",
+                  "type": "gene-annotations",
+                  "width": 568,
+                  "height": 55,
+                  "server": "https://cgap-higlass.com/api/v1",
+                  "options": {
+                    "name": "Gene Annotations (hg38)",
+                    "fontSize": 10,
+                    "minHeight": 24,
+                    "labelColor": "black",
+                    "labelPosition": "hidden",
+                    "labelTopMargin": 0,
+                    "labelLeftMargin": 0,
+                    "plusStrandColor": "#8a8ccf",
+                    "labelRightMargin": 0,
+                    "minusStrandColor": "#e8727a",
+                    "trackBorderColor": "black",
+                    "trackBorderWidth": 0,
+                    "geneLabelPosition": "outside",
+                    "geneStrandSpacing": 2,
+                    "labelBottomMargin": 0,
+                    "showMousePosition": false,
+                    "mousePositionColor": "#000000",
+                    "geneAnnotationHeight": 12,
+                    "labelBackgroundColor": "#ffffff"
+                  },
+                  "filetype": "beddb",
+                  "tilesetUid": "gene_annotation_hg38"
+                },
+                {
+                  "uid": "d6KeVfkNSmq_YNj_rWJgBA",
+                  "type": "viewport-projection-horizontal",
+                  "width": 568,
+                  "height": 55,
+                  "options": {
+                    "strokeWidth": 1,
+                    "projectionFillColor": "#777",
+                    "projectionFillOpacity": 0.3,
+                    "projectionStrokeColor": "#777",
+                    "projectionStrokeOpacity": 0.7
+                  },
+                  "fromViewUid": "ab"
+                }
+              ]
+            },
+            {
+              "uid": "texttrack_cyto",
+              "type": "text",
+              "width": 568,
+              "height": 25,
+              "server": "https://cgap-higlass.com/api/v1",
+              "options": {
+                "text": "Chromosome bands",
+                "align": "left",
+                "offsetY": 12,
+                "fontSize": 11,
+                "textColor": "#777777",
+                "fontFamily": "Arial",
+                "fontWeight": "normal",
+                "backgroundColor": "#ffffff"
+              }
+            },
+            {
+              "uid": "cytoband",
+              "data": {
+                "type": "vcf",
+                "tbiUrl": "https://cgap-higlass.s3.amazonaws.com/vcf/cytoBandWithDelimiter.hg38.vcf.gz.tbi",
+                "vcfUrl": "https://cgap-higlass.s3.amazonaws.com/vcf/cytoBandWithDelimiter.hg38.vcf.gz",
+                "chromSizesUrl": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.mod.chrom.sizes"
+              },
+              "type": "vcf",
+              "width": 470,
+              "height": 30,
+              "options": {
+                "displayConfiguration": {
+                  "mark": {
+                    "size": 16,
+                    "type": "nominal",
+                    "field": "INFO:GIESTAIN",
+                    "range": ["triangle-east", "triangle-west"],
+                    "domain": ["acen-east", "acen-west"],
+                    "default": "rect"
+                  },
+                  "xEnd": {
+                    "field": "INFO:END"
+                  },
+                  "color": {
+                    "type": "nominal",
+                    "field": "INFO:GIESTAIN",
+                    "range": [
+                      "#3ed0ed",
+                      "#FF2323",
+                      "#FF2323",
+                      "#9F9F9F",
+                      "#4F4F4F",
+                      "#EEEEEE",
+                      "#B9B9B9",
+                      "#848484",
+                      "#6A6A6A",
+                      "#4F4F4F"
+                    ],
+                    "domain": [
+                      "delimiter",
+                      "acen-east",
+                      "acen-west",
+                      "stalk",
+                      "gvar",
+                      "gneg",
+                      "gpos25",
+                      "gpos50",
+                      "gpos75",
+                      "gpos100"
+                    ],
+                    "default": "#000000"
+                  },
+                  "label": {
+                    "text": "$INFO:NAME$",
+                    "type": "contained",
+                    "align": "left",
+                    "color": "automatic",
+                    "excludes": {
+                      "field": "INFO:GIESTAIN",
+                      "values": ["acen-east", "acen-west", "delimiter"]
+                    },
+                    "fontSize": 13
+                  },
+                  "xStart": {
+                    "field": "POS"
+                  },
+                  "tooltip": {
+                    "type": "nominal",
+                    "field": "INFO:GIESTAIN",
+                    "range": [
+                      "<table><tr><td>Chromosome:</td><td>$CHROM$</td></tr><tr><td>Name:</td><td>$INFO:NAME$</td></tr><tr><td>Stain:</td><td>acen</td></tr><table>",
+                      "<table><tr><td>Chromosome:</td><td>$CHROM$</td></tr><tr><td>Name:</td><td>$INFO:NAME$</td></tr><tr><td>Stain:</td><td>acen</td></tr><table>",
+                      "Chromosome boundary"
+                    ],
+                    "domain": ["acen-east", "acen-west", "delimiter"],
+                    "default": "<table><tr><td>Chromosome:</td><td>$CHROM$</td></tr><tr><td>Name:</td><td>$INFO:NAME$</td></tr><tr><td>Stain:</td><td>$INFO:GIESTAIN$</td></tr><table>"
+                  },
+                  "yAlignment": {
+                    "type": "horizontal"
+                  }
+                }
+              }
+            }
+          ],
+          "left": [],
+          "right": [],
+          "whole": [],
+          "bottom": [],
+          "center": [],
+          "gallery": []
+        },
+        "chromInfoPath": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.mod.chrom.sizes",
+        "initialXDomain": [
+          -19011281.251856573,
+            563486536.9053719
+        ],
+        "initialYDomain": [
+          -2681117748.606745,
+          -2681117652.1675754
+        ],
+        "autocompleteSource": "/api/v1/suggest/?d=gene_annotation_hg38&",
+        "genomePositionSearchBox": {
+          "visible": true,
+          "chromInfoId": "hg38",
+          "autocompleteId": "gene_annotation_hg38",
+          "chromInfoServer": "https://cgap-higlass.com/api/v1",
+          "autocompleteServer": "https://cgap-higlass.com/api/v1"
+        }
+      },
+      {
+        "uid": "ab",
+        "layout": {
+          "h": 20,
+          "w": 12,
+          "x": 0,
+          "y": 3
+        },
+        "tracks": {
+          "top": [
+            {
+              "uid": "gene-annotations-detail-view",
+              "type": "gene-annotations",
+              "width": 568,
+              "height": 55,
+              "server": "https://cgap-higlass.com/api/v1",
+              "options": {
+                "name": "Gene Annotations (hg38)",
+                "fontSize": 10,
+                "minHeight": 24,
+                "labelColor": "black",
+                "labelPosition": "hidden",
+                "labelTopMargin": 0,
+                "labelLeftMargin": 0,
+                "plusStrandColor": "#8a8ccf",
+                "labelRightMargin": 0,
+                "minusStrandColor": "#e8727a",
+                "trackBorderColor": "black",
+                "trackBorderWidth": 0,
+                "geneLabelPosition": "outside",
+                "geneStrandSpacing": 2,
+                "labelBottomMargin": 0,
+                "showMousePosition": false,
+                "mousePositionColor": "#000000",
+                "geneAnnotationHeight": 12,
+                "labelBackgroundColor": "#ffffff"
+              },
+              "filetype": "beddb",
+              "tilesetUid": "gene_annotation_hg38"
+            },
+            {
+              "uid": "AdlJsUYFRzuJRZyYeKDX2A",
+              "type": "chromosome-labels",
+              "width": 811,
+              "height": 30,
+              "server": "https://cgap-higlass.com/api/v1",
+              "options": {
+                "color": "#808080",
+                "stroke": "#ffffff",
+                "fontSize": 12,
+                "fontIsLeftAligned": false,
+                "showMousePosition": false,
+                "mousePositionColor": "#000000",
+                "reverseOrientation": false
+              },
+              "filetype": "chromsizes-tsv",
+              "tilesetUid": "chromsizes_hg38"
+            },
+            {
+              "uid": "fastaex",
+              "data": {
+                "type": "fasta",
+                "faiUrl": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.fa.fai",
+                "fastaUrl": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.fa",
+                "chromSizesUrl": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.mod.chrom.sizes"
+              },
+              "type": "horizontal-sequence",
+              "width": 768,
+              "height": 25,
+              "server": "https://cgap-higlass.com/api/v1",
+              "options": {
+                "name": "hg38",
+                "barBorder": true,
+                "colorScale": [
+                  "#08519c",
+                  "#6baed6",
+                  "#993404",
+                  "#fe9929",
+                  "#808080",
+                  "#DCDCDC"
+                ],
+                "labelColor": "black",
+                "valueScaling": "linear",
+                "labelPosition": "topLeft",
+                "barBorderColor": "white",
+                "backgroundColor": "white",
+                "labelTextOpacity": 0.4,
+                "sortLargestOnTop": true,
+                "trackBorderColor": "white",
+                "trackBorderWidth": 0,
+                "extendedPreloading": false,
+                "colorAggregationMode": "none",
+                "notificationText": "Zoom in to see nucleotides...",
+                "fontSize": 16,
+                "fontFamily": "Arial",
+                "fontColor": "white",
+                "textOption": {
+                  "fontSize": "32px",
+                  "fontFamily": "Arial",
+                  "fill": 16777215,
+                  "fontWeight": "bold"
+                }
+              }
+            },
+            {
+              "uid": "emptytrack_udn_seq",
+              "type": "empty",
+              "width": 568,
+              "height": 10,
+              "options": {}
+            },
+            {
+              "uid": "texttrack_udn_gene",
+              "type": "text",
+              "width": 568,
+              "height": 20,
+              "server": "https://cgap-higlass.com/api/v1",
+              "options": {
+                "text": "UDN Gene-level resuls",
+                "align": "left",
+                "offsetY": 4,
+                "fontSize": 11,
+                "textColor": "#333333",
+                "fontFamily": "Arial",
+                "fontWeight": "bold",
+                "backgroundColor": "#ededed"
+              }
+            },
+            {
+              "uid": "emptytrack_udn_genes",
+              "type": "empty",
+              "width": 568,
+              "height": 10,
+              "options": {}
+            },
+            {
+              "type": "geneList",
+              "options": {
+                "infoFields": [
+                  {
+                    "name": "END",
+                    "type": "int"
+                  },
+                  {
+                    "name": "SYMBOL",
+                    "type": "string"
+                  },
+                  {
+                    "name": "go_terms",
+                    "type": "string_list"
+                  },
+                  {
+                    "name": "kegg_category",
+                    "type": "string_list"
+                  },
+                  {
+                    "name": "DeNovoWEST_pvalue",
+                    "type": "float"
+                  },
+                  {
+                    "name": "biallelic_pvalue",
+                    "type": "float"
+                  }
+                ],
+                "filter": [
+                  {
+                    "field": "DeNovoWEST_pvalue",
+                    "operator": "is_between",
+                    "target": [
+                      0.0,
+                      1000.0
+                    ]
+                  }
+                ],
+                "yValue": {
+                  "field": "DeNovoWEST_pvalue"
+                },
+                "significanceTreshold": 1.3,
+                "yAxisLabel": {
+                  "visible": true,
+                  "text": "DeNovoWEST p"
+                },
+                "project": "UDN"
+              },
+              "height": 120,
+              "uid": "udn_gene_track",
+              "data": {
+                "type": "vcf",
+                "vcfUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20230417.vcf.gz",
+                "tbiUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20230417.vcf.gz.tbi",
+                "chromSizesUrl": "https://aveit.s3.amazonaws.com/higlass/data/sequence/hg38.mod.chrom.sizes"
+              },
+              "width": 450
+            },
+            {
+              "uid": "texttrack_udn",
+              "type": "text",
+              "width": 568,
+              "height": 20,
+              "server": "https://cgap-higlass.com/api/v1",
+              "options": {
+                "text": "UDN Cohort Data",
+                "align": "left",
+                "offsetY": 4,
+                "fontSize": 11,
+                "textColor": "#333333",
+                "fontFamily": "Arial",
+                "fontWeight": "bold",
+                "backgroundColor": "#ededed"
+              }
+            },
+            {
+              "uid": "emptytrack_udn_variants",
+              "type": "empty",
+              "width": 568,
+              "height": 10,
+              "options": {}
+            },
+            {
+              "type": "cohort",
+              "options": {
+                "variantDetailSource": {
+                  "vcfUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.samples.vcf.gz",
+                  "tbiUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.samples.vcf.gz.tbi"
+                },
+                "infoFields": [
+                  {
+                    "name": "transcript",
+                    "type": "string"
+                  },
+                  {
+                    "name": "SYMBOL",
+                    "type": "string"
+                  },
+                  {
+                    "name": "gene",
+                    "type": "string"
+                  },
+                  {
+                    "name": "case_AC",
+                    "type": "int"
+                  },
+                  {
+                    "name": "case_AN",
+                    "type": "int"
+                  },
+                  {
+                    "name": "case_AF",
+                    "type": "float"
+                  },
+                  {
+                    "name": "control_AC",
+                    "type": "int"
+                  },
+                  {
+                    "name": "control_AN",
+                    "type": "int"
+                  },
+                  {
+                    "name": "control_AF",
+                    "type": "float"
+                  },
+                  {
+                    "name": "gnomADpopmax_AF",
+                    "type": "float"
+                  },
+                  {
+                    "name": "most_severe_consequence",
+                    "type": "string"
+                  },
+                  {
+                    "name": "level_most_severe_consequence",
+                    "type": "string"
+                  },
+                  {
+                    "name": "cadd_raw",
+                    "type": "float"
+                  },
+                  {
+                    "name": "cadd_phred",
+                    "type": "float"
+                  },
+                  {
+                    "name": "cdna_change",
+                    "type": "string"
+                  },
+                  {
+                    "name": "prot_change",
+                    "type": "string"
+                  },
+                  {
+                    "name": "clinvar_alleleid",
+                    "type": "string"
+                  },
+                  {
+                    "name": "protein",
+                    "type": "string"
+                  },
+                  {
+                    "name": "go_terms",
+                    "type": "string"
+                  },
+                  {
+                    "name": "kegg_category",
+                    "type": "string_list"
+                  },
+                  {
+                    "name": "spliceai_al",
+                    "type": "float"
+                  },
+                  {
+                    "name": "spliceai_ag",
+                    "type": "float"
+                  },
+                  {
+                    "name": "spliceai_dg",
+                    "type": "float"
+                  },
+                  {
+                    "name": "spliceai_dl",
+                    "type": "float"
+                  }
+                ],
+                "filter": [
+                  {
+                    "field": "level_most_severe_consequence",
+                    "operator": "is_one_of",
+                    "target": [
+                      "HIGH",
+                      "MODERATE",
+                      "LOW",
+                      "MODIFIER"
+                    ]
+                  },
+                  {
+                    "field": "cadd_phred",
+                    "operator": "is_between",
+                    "target": [
+                      0.0,
+                      1000.0
+                    ]
+                  }
+                ],
+                "yValue": {
+                  "field": "cadd_phred"
+                },
+                "colorScale": {
+                  "field": "level_most_severe_consequence",
+                  "scale": [
+                    {
+                      "value": "HIGH",
+                      "color": "#ff0000"
+                    },
+                    {
+                      "value": "MODERATE",
+                      "color": "#bf9c00"
+                    },
+                    {
+                      "value": "LOW",
+                      "color": "#51abf5"
+                    },
+                    {
+                      "value": "MODIFIER",
+                      "color": "#db4dff"
+                    }
+                  ]
+                },
+                "colorScaleLegend": {
+                  "visible": true,
+                  "values": [
+                    "HIGH",
+                    "MODERATE",
+                    "LOW",
+                    "MODIFIER"
+                  ]
+                },
+                "yAxisLabel": {
+                  "visible": true,
+                  "text": "CADD Score"
+                },
+                "project": "UDN"
+              },
+              "height": 150,
+              "uid": "FylkvVBTSumoJ959HT4-5B",
+              "data": {
+                "type": "vcf",
+                "vcfUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.variants.20230726.multires.vcf.gz",
+                "tbiUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.variants.20230726.multires.vcf.gz.tbi",
+                "chromSizesUrl": "https://aveit.s3.amazonaws.com/higlass/data/sequence/hg38.mod.chrom.sizes"
+              },
+              "width": 450
+            },
+            {
+              "uid": "texttrack",
+              "type": "text",
+              "options": {
+                "backgroundColor": "#ededed",
+                "textColor": "#333333",
+                "fontSize": 12,
+                "fontFamily": "Arial",
+                "fontWeight": "bold",
+                "offsetY": 3, 
+                "align": "left", 
+                "text": "Variant density"
+              },
+              "width": 568,
+              "height": 20
+            },
+            {
+              "uid": "empty_density",
+              "type": "empty",
+              "width": 811,
+              "height": 10,
+              "tilesetUid": "empty"
+            },
+            {
+              "data": {
+                "type": "bbi",
+                "url": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.variants.20230726.coverage.bw",
+                "chromSizesUrl": "https://aveit.s3.amazonaws.com/higlass/data/sequence/hg38.chrom.sizes"
+              },
+              "uid": "bw",
+              "type": "bar",
+              "options": {
+                "labelPosition": "topRight",
+                "labelLeftMargin": 0,
+                "labelRightMargin": 0,
+                "labelTopMargin": 0,
+                "labelBottomMargin": 0,
+                "labelShowResolution": false,
+                "labelShowAssembly": true,
+                "axisPositionHorizontal": null,
+                "barFillColor": "darkgreen",
+                "valueScaling": "linear",
+                "trackBorderWidth": 0,
+                "trackBorderColor": "black",
+                "labelTextOpacity": 0.4,
+                "valueScaleMin": 0,
+                "name": ""
+              },
+              "width": 20,
+              "height": 50
+            }
+          ],
+          "left": [],
+          "right": [],
+          "whole": [],
+          "bottom": [],
+          "center": [],
+          "gallery": []
+        },
+        "chromInfoPath": "https://cgap-higlass.s3.amazonaws.com/sequence/hg38.mod.chrom.sizes",
+        "initialXDomain": [
+          224463652.73728994,
+        285637468.9367594
+        ],
+        "initialYDomain": [
+          1350227946.4736395,
+          1350227946.4736395
+        ],
+        "genomePositionSearchBox": {
+          "visible": true,
+          "chromInfoId": "hg38",
+          "autocompleteId": "gene_annotation_hg38",
+          "chromInfoServer": "https://cgap-higlass.com/api/v1",
+          "autocompleteServer": "https://cgap-higlass.com/api/v1"
+        }
+      }
+    ],
+    "editable": true,
+    "zoomFixed": false,
+    "zoomLocks": {
+      "locksByViewUid": {},
+      "locksDict": {}
+    },
+    "exportViewUrl": "/api/v1/viewconfs",
+    "locationLocks": {
+      "locksByViewUid": {},
+      "locksDict": {}
+    },
+    "valueScaleLocks": {
+      "locksByViewUid": {},
+      "locksDict": {}
+    },
+    "trackSourceServers": [
+      "https://cgap-higlass.com/api/v1"
+    ]
+  }
+}

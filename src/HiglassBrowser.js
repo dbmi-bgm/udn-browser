@@ -9,6 +9,7 @@ import { default as ClinvarTrack } from "higlass-clinvar/es/ClinvarTrack";
 import { default as TextTrack } from "higlass-text/es/TextTrack";
 import { default as OrthologsTrack } from "higlass-orthologs/es/OrthologsTrack";
 import { default as GnomadTrack } from "higlass-gnomad/es/GnomadTrack";
+import { default as GeneralVcfTrack } from 'higlass-general-vcf/es/GeneralVcfTrack';
 import { default as CohortTrack } from "higlass-cohort/es/CohortTrack";
 import { default as GeneListTrack } from 'higlass-cohort/es/GeneListTrack';
 import { BigwigDataFetcher } from "higlass-bigwig-datafetcher";
@@ -49,6 +50,11 @@ export class HiglassBrowser extends React.PureComponent {
       name: "GnomadTrack",
       track: GnomadTrack,
       config: GnomadTrack.config,
+    });
+    higlassRegister({
+      name: "GeneralVcfTrack",
+      track: GeneralVcfTrack,
+      config: GeneralVcfTrack.config,
     });
     higlassRegister({
       name: "CohortTrack",

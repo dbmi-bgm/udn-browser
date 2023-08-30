@@ -160,7 +160,6 @@ export class GeneTable extends React.Component {
     }
 
     const variantRows = [];
-    console.log(this.state.selectedKeggCategory);
     const selectedKeggCategories = this.state.selectedKeggCategory
       ? this.state.selectedKeggCategory.map((c) => c.value)
       : [];

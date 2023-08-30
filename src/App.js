@@ -37,7 +37,7 @@ function App() {
         </div>
       </div>
 
-      <div className="container-fluid bg-light mt-2 py-4 text-center">
+      <div className="container-fluid bg-light mt-5 py-4 text-center">
         <div className="mb-1">
           If you have any questions or suggestions please contact us:
         </div>

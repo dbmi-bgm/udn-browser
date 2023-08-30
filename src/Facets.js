@@ -3,7 +3,11 @@
 import React from "react";
 import { GeneSearchBox } from "./GeneSearchBox";
 import Select from "react-select";
-import { KEGG_CATEGORY_OPTIONS } from "./config";
+import {
+  KEGG_CATEGORY_OPTIONS,
+  STATISTICAL_TEST_OPTIONS,
+  SELECTED_STATISTICAL_TEST,
+} from "./config";
 //import makeAnimated from 'react-select/animated';
 import viewConfigClinvar from "./viewConfig.clinvar.json";
 import viewConfigTranscripts from "./viewConfig.transcripts.json";
@@ -29,6 +33,7 @@ export class Facets extends React.PureComponent {
     this.state = {
       activeConsequenceLevels: [CL_HIGH, CL_MODERATE, CL_LOW, CL_MODIFIER],
       selectedKeggCategory: null,
+      selectedStatisticalTest: SELECTED_STATISTICAL_TEST,
       isTranscriptsTrackVisible: false,
       isClinvarTrackVisible: false,
       isGnomadTrackVisible: false,
@@ -38,6 +43,22 @@ export class Facets extends React.PureComponent {
 
   componentDidMount() {}
 
+  handleStatTestChange = (selectedStatisticalTest) => {
+    this.setState({ selectedStatisticalTest }, () => {
+      if (!window.hgc) {
+        return;
+      }
+      const hgc = window.hgc.current;
+      const viewconfCohort = hgc.api.getViewConfig();
+      viewconfCohort.views[1].tracks.top.forEach((track) => {
+        if (track.type === "geneList") {
+          track.options["yValue"]["field"] = selectedStatisticalTest.value;
+        }
+      });
+      hgc.api.setViewConfig(viewconfCohort);
+    });
+  };
+
   handleKeggChange = (selectedKeggCategory) => {
     this.setState({ selectedKeggCategory }, () => {
       if (!window.hgc) {
@@ -46,7 +67,7 @@ export class Facets extends React.PureComponent {
       const hgc = window.hgc.current;
       const viewconfCohort = hgc.api.getViewConfig();
       viewconfCohort.views[1].tracks.top.forEach((track) => {
-        if (track.type === "cohort") {
+        if (track.type === "cohort" || track.type === "geneList") {
           const newFilter = [];
           track.options["filter"].forEach((filter) => {
             if (filter["field"] !== "kegg_category") {
@@ -212,7 +233,7 @@ export class Facets extends React.PureComponent {
   render() {
     const consequenceLevels = [CL_HIGH, CL_MODERATE, CL_LOW, CL_MODIFIER];
 
-    const { selectedKeggCategory } = this.state;
+    const { selectedKeggCategory, selectedStatisticalTest } = this.state;
 
     return (
       <React.Fragment>
@@ -285,6 +306,27 @@ export class Facets extends React.PureComponent {
             </div>
 
             <div className="d-block bg-light px-2 mb-1 mt-3">
+              <small>GENE LEVEL FILTERING</small>
+            </div>
+
+            <div className="mt-2">KEGG category</div>
+            <Select
+              value={selectedKeggCategory}
+              onChange={this.handleKeggChange}
+              options={KEGG_CATEGORY_OPTIONS}
+              closeMenuOnSelect={false}
+              isMulti
+              placeholder="Select multiple..."
+            />
+
+            <div className="mt-2">Statistical test</div>
+            <Select
+              value={selectedStatisticalTest}
+              onChange={this.handleStatTestChange}
+              options={STATISTICAL_TEST_OPTIONS}
+            />
+
+            <div className="d-block bg-light px-2 mb-1 mt-3">
               <small>VARIANT LEVEL FILTERING</small>
             </div>
             <div className="mt-2">CADD Score</div>
@@ -311,17 +353,7 @@ export class Facets extends React.PureComponent {
               </div>
             </div>
 
-            <div className="">KEGG category</div>
-            <Select
-              value={selectedKeggCategory}
-              onChange={this.handleKeggChange}
-              options={KEGG_CATEGORY_OPTIONS}
-              closeMenuOnSelect={false}
-              isMulti
-              placeholder="Select multiple..."
-            />
-
-            <div className="mt-3">Consequence levels (VEP)</div>
+            <div className="mt-1">Consequence levels (VEP)</div>
             <div className="row">
               {consequenceLevels.map((cl) => (
                 <div className="col-sm-6">
