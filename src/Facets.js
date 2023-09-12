@@ -53,6 +53,7 @@ export class Facets extends React.PureComponent {
       viewconfCohort.views[1].tracks.top.forEach((track) => {
         if (track.type === "geneList") {
           track.options["yValue"]["field"] = selectedStatisticalTest.value;
+          track.options["yAxisLabel"]["text"] = selectedStatisticalTest.label;
         }
       });
       hgc.api.setViewConfig(viewconfCohort);

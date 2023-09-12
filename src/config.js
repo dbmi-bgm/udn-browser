@@ -9,8 +9,8 @@ export const SELECTED_STATISTICAL_TEST = {
 };
 
 export const STATISTICAL_TEST_OPTIONS = [
-  { value: "DeNovoWEST_pvalue", label: "DeNovoWEST" },
-  { value: "biallelic_pvalue", label: "Biallelic" },
+  { value: "DeNovoWEST_pvalue", label: "DeNovoWEST p" },
+  { value: "biallelic_pvalue", label: "Biallelic p" },
 ];
 
 export const KEGG_CATEGORY_OPTIONS = [
