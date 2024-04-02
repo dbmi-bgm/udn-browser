@@ -30,6 +30,11 @@ body {
       animation: App-logo-spin infinite 20s linear;
     }
   }
+
+  .underline-dotted{
+    text-decoration-style: dotted;
+    text-decoration-line: underline;
+  }
   
   .fixedHeight{
     // height: 1000px;
@@ -57,5 +62,9 @@ body {
     to {
       transform: rotate(360deg);
     }
+  }
+
+  .font10 {
+    font-size: 1.0rem!important;
   }
   

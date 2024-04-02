@@ -6,6 +6,7 @@ import { RemoteFile } from "generic-filehandle";
 //import fetch from 'node-fetch'
 import { CHROMS } from "./chrom-utils";
 import Select from "react-select";
+import { Tooltip } from "react-tooltip";
 import { format } from "d3-format";
 import { vcfRecordToJson, parseLocation } from "./gene-data-utils";
 
@@ -13,7 +14,8 @@ import { GENE_VCF_URL, GENE_TBI_URL, KEGG_CATEGORY_OPTIONS } from "./config";
 
 const PAGE_SIZE = 30;
 const DE_NOVO_WEST_P = "deNovoWestPvalue";
-const BIALLELEIC = "biallelicPvalue";
+const RAMEDIES_P = "ramediesPvalue";
+const RAMEDIES_COMPH_P = "ramediescomphPvalue";
 
 export class GeneTable extends React.Component {
   constructor(props) {
@@ -200,15 +202,18 @@ export class GeneTable extends React.Component {
 
       const deNovoWestPvalue =
         variant.deNovoWestPvalue === 0 ? "-" : variant.deNovoWestPvalue;
-      const biallelicPvalue =
-        variant.biallelicPvalue === 0 ? "-" : variant.biallelicPvalue;
+      const ramediesPvalue =
+        variant.ramediesPvalue === 0 ? "-" : variant.ramediesPvalue;
+      const ramediescomphPvalue =
+        variant.ramediescomphPvalue === 0 ? "-" : variant.ramediescomphPvalue;
 
       variantRows.push(
         <tr>
           <td>{variant.symbol}</td>
           <td>{variant.chrom}</td>
           <td>{deNovoWestPvalue}</td>
-          <td>{biallelicPvalue}</td>
+          <td>{ramediesPvalue}</td>
+          <td>{ramediescomphPvalue}</td>
           <td>{kegg}</td>
           <td className={this.state.showGoTerms ? "" : "collapse"}>
             {goTerms}
@@ -258,15 +263,25 @@ export class GeneTable extends React.Component {
         ? sortSymbolClassDeNovo + " active"
         : sortSymbolClassDeNovo;
 
-    let sortSymbolClassBiallelic =
+    let sortSymbolClassRamediesPvalue =
       "fa fa-sort-amount-desc pointer gene-table-sort-symbol pl-1";
-    sortSymbolClassBiallelic =
-      this.state.sortBy === BIALLELEIC
-        ? sortSymbolClassBiallelic + " active"
-        : sortSymbolClassBiallelic;
+    sortSymbolClassRamediesPvalue =
+      this.state.sortBy === RAMEDIES_P
+        ? sortSymbolClassRamediesPvalue + " active"
+        : sortSymbolClassRamediesPvalue;
+
+    let sortSymbolClassRamediesComphPvalue =
+      "fa fa-sort-amount-desc pointer gene-table-sort-symbol pl-1";
+    sortSymbolClassRamediesComphPvalue =
+      this.state.sortBy === RAMEDIES_COMPH_P
+        ? sortSymbolClassRamediesComphPvalue + " active"
+        : sortSymbolClassRamediesComphPvalue;
 
     return (
       <div>
+        <Tooltip id="denovo_tooltip" style={{ zIndex: "2000" }} />
+        <Tooltip id="RaMeDiES_tooltip_1" style={{ zIndex: "2000" }} />
+        <Tooltip id="RaMeDiES_tooltip_2" style={{ zIndex: "2000" }} />
         <div className="d-flex flex-row-reverse">
           {navButtons}
           <div className="pt-1 mx-2 ">{message}</div>
@@ -329,32 +344,102 @@ export class GeneTable extends React.Component {
               <table className="table table-hover table-sm">
                 <thead className="sticky-table-header bg-white">
                   <tr>
-                    <th scope="col">Gene</th>
-                    <th scope="col">Chrom.</th>
+                    <th scope="col" className="align-middle">
+                      Gene
+                    </th>
+                    <th scope="col" className="align-middle">
+                      Chrom.
+                    </th>
                     <th scope="col">
-                      <div className="text-nowrap">
-                        DeNovoWEST p-value{" "}
-                        <i
-                          className={sortSymbolClassDeNovo}
-                          onClick={this.sortTable}
-                          data-col={DE_NOVO_WEST_P}
-                        ></i>
+                      <div className="d-flex flex-row bd-highlight">
+                        <div className="align-self-center">
+                        <span
+                            data-tooltip-id="denovo_tooltip"
+                            data-tooltip-html="-log10 of the unadjusted pvalue computed <br/>
+                             by DeNovoWEST on the set of de novo <br/>
+                              SNV/indels across all affected individuals; <br/>
+                               gain-of-function (missense clustering <br/>
+                                and enrichment) and loss-of-function <br/>
+                                 (all mutational enrichment) models are applied."
+                            className="underline-dotted"
+                          >
+                            DeNovoWEST{" "}
+                            <span className="text-nowrap">p-value</span>
+                          </span>
+                          
+                        </div>
+                        <div class="pl-1 pr-2 align-self-center">
+                          <i
+                            className={sortSymbolClassDeNovo}
+                            onClick={this.sortTable}
+                            data-col={DE_NOVO_WEST_P}
+                          ></i>
+                        </div>
                       </div>
                     </th>
                     <th scope="col">
-                      <div className="text-nowrap">
-                        Biallelic p-value{" "}
-                        <i
-                          className={sortSymbolClassBiallelic}
-                          onClick={this.sortTable}
-                          data-col={BIALLELEIC}
-                        ></i>
+                      <div className="d-flex flex-row bd-highlight">
+                        <div className="align-self-center">
+                          <span
+                            data-tooltip-id="RaMeDiES_tooltip_1"
+                            data-tooltip-html="-log10 of the weighted Q-values computed <br/> 
+                            by the closed-form statistic for de <br/> 
+                            novo variant cohort-level recurrence <br/>
+                             introduced in the RaMeDiES package.  <br/>
+                             Coding and intronic SNV and indel  <br/>
+                             variants are considered. "
+                            className="underline-dotted"
+                          >
+                            RaMeDiES denovos{" "}
+                            <span className="text-nowrap">p-value</span>
+                          </span>
+                          
+                        </div>
+                        <div className="pl-1 pr-2 align-self-center">
+                          <i
+                            className={sortSymbolClassRamediesPvalue}
+                            onClick={this.sortTable}
+                            data-col={RAMEDIES_P}
+                          ></i>
+                        </div>
                       </div>
                     </th>
-                    <th scope="col">KEGG category</th>
+                    <th scope="col">
+                      <div className="d-flex flex-row bd-highlight">
+                        <div className="align-self-center">
+                          <span
+                            data-tooltip-id="RaMeDiES_tooltip_2"
+                            data-tooltip-html="-log10 of the unadjusted pvalues indicating <br/>
+                             the significance  of compound heterozygous <br/>
+                             variants observed at the individual-level  <br/>
+                             and computed using the closed-form compound <br/>
+                             heterozygous statistics introduced in the <br/>
+                             RaMeDiES package."
+                            className="underline-dotted"
+                          >
+                            RaMeDiES comphet{" "}
+                            <span className="text-nowrap">p-value</span>
+                          </span>
+                        </div>
+                        <div className="pl-1 pr-2 align-self-center">
+                          <i
+                            className={sortSymbolClassRamediesComphPvalue}
+                            onClick={this.sortTable}
+                            data-col={RAMEDIES_COMPH_P}
+                          ></i>
+                        </div>
+                      </div>
+                    </th>
+                    <th scope="col" className="align-middle">
+                      KEGG category
+                    </th>
                     <th
                       scope="col"
-                      className={this.state.showGoTerms ? "" : "collapse"}
+                      className={
+                        this.state.showGoTerms
+                          ? "align-middle"
+                          : "align-middle collapse"
+                      }
                     >
                       GO terms
                     </th>

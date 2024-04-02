@@ -59,6 +59,24 @@ export class GeneSearchBox extends React.PureComponent {
       loading: true,
     });
 
+    // TYR is not retrieved correctly - handle it explicitely
+    if(this.state.currentTextValue.toLowerCase() === "tyr"){
+      const search_result = {
+        "chr": "chr11",
+        "geneName": "TYR",
+        "score": 100,
+        "txStart": 89177871,
+        "txEnd": 89295759
+      };
+      this.setState({
+        loading: false,
+        results: [search_result],
+        error: null,
+        info: null,
+      });
+      return;
+    }
+
     axios.get(this.constructFetchURL()).then((response) => {
       let searchResults = null;
       if (response && response.data && response.data.length === 0) {
@@ -66,6 +84,7 @@ export class GeneSearchBox extends React.PureComponent {
       } else if (response && response.data && response.data.length > 0) {
         searchResults = response.data;
       }
+      console.log(searchResults);
 
       if (searchResults === null) {
         this.setState({
@@ -99,9 +118,15 @@ export class GeneSearchBox extends React.PureComponent {
       const hgc = window.hgc.current;
       const viewconf = hgc.api.getViewConfig();
       const viewId0 = viewconf.views[0].uid;
-      hgc.api.zoomToGene(viewId0, geneName, 10000, 2000);
       const viewId1 = viewconf.views[1].uid;
-      hgc.api.zoomToGene(viewId1, geneName, 5000, 2000);
+      if(geneName === "TYR"){
+        hgc.api.zoomTo(viewId0, 1897850000, 1897990000, 0, 100, 2000);
+        hgc.api.zoomTo(viewId1, 1897850000, 1897990000, 0, 100, 2000);
+      }else{
+        hgc.api.zoomToGene(viewId0, geneName, 10000, 2000);
+        hgc.api.zoomToGene(viewId1, geneName, 5000, 2000);
+      }
+      
     }
   }
 

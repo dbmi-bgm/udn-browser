@@ -73,8 +73,8 @@
           1549714.2497034417
         ],
         "initialYDomain": [
-          1350227946.4736395,
-          1350227946.4736395
+          0,
+          100
         ],
         "genomePositionSearchBox": {
           "visible": true,

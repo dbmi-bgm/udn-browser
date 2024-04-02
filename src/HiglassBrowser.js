@@ -20,6 +20,7 @@ export class HiglassBrowser extends React.PureComponent {
     super(props);
     this.hgc = React.createRef();
     window.hgc = this.hgc;
+    window.Buffer = window.Buffer || require("buffer").Buffer;
     this.viewConfig = viewConfig.viewConfig;
     higlassRegister({
       name: "SequenceTrack",
@@ -75,7 +76,16 @@ export class HiglassBrowser extends React.PureComponent {
     );
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    setTimeout(() => {
+      if (!window.hgc) {
+        return;
+      }
+      const hgc = window.hgc.current;
+      hgc.api.reload();
+    }, "2000");
+    
+  }
 
   render() {
     return (

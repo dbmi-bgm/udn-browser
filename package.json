@@ -1,6 +1,6 @@
 {
   "name": "udn-browser",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
   "homepage": "https://dbmi-bgm.github.io/udn-browser",
   "main": "index.js",
@@ -25,7 +25,7 @@
     "higlass": "1.12.4",
     "higlass-bigwig-datafetcher": "^0.2.0",
     "higlass-clinvar": "^0.2.5",
-    "higlass-cohort": "0.4.0-beta.3",
+    "higlass-cohort": "0.4.0-beta.6",
     "higlass-general-vcf": "0.1.4",
     "higlass-gnomad": "^0.2.2",
     "higlass-orthologs": "^0.2.4",
@@ -41,7 +41,7 @@
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.1",
     "react-select": "^5.7.4",
-    "react-tooltip": "4.2.10",
+    "react-tooltip": "^5.0.0",
     "stream-browserify": "^3.0.0",
     "underscore": "^1.10.2",
     "util": "^0.12.5"

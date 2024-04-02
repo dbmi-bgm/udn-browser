@@ -7,6 +7,8 @@ import {
   KEGG_CATEGORY_OPTIONS,
   STATISTICAL_TEST_OPTIONS,
   SELECTED_STATISTICAL_TEST,
+  SELECTED_AFFECTED_STATUS,
+  AFFECTED_STATUS_OPTIONS
 } from "./config";
 //import makeAnimated from 'react-select/animated';
 import viewConfigClinvar from "./viewConfig.clinvar.json";
@@ -34,6 +36,7 @@ export class Facets extends React.PureComponent {
       activeConsequenceLevels: [CL_HIGH, CL_MODERATE, CL_LOW, CL_MODIFIER],
       selectedKeggCategory: null,
       selectedStatisticalTest: SELECTED_STATISTICAL_TEST,
+      selectedStatus: SELECTED_AFFECTED_STATUS,
       isTranscriptsTrackVisible: false,
       isClinvarTrackVisible: false,
       isGnomadTrackVisible: false,
@@ -163,9 +166,57 @@ export class Facets extends React.PureComponent {
           track.options["filter"].forEach((filter) => {
             if (filter["field"] === "cadd_phred") {
               if (minMax === "min") {
-                filter["target"][0] = val === "" ? 0 : val;
+                filter["target"][0] = val === "" ? 0 : parseFloat(val);
               } else {
-                filter["target"][1] = val === "" ? 200 : val;
+                filter["target"][1] = val === "" ? 200 : parseFloat(val);
+              }
+            }
+          });
+        }
+      });
+      hgc.api.setViewConfig(viewconfCohort);
+    }
+  }
+
+  applyStatusFilter = (selectedStatus) => {
+
+    this.setState({ selectedStatus }, () => {
+      if (!window.hgc) {
+        return;
+      }
+    });
+    const val = selectedStatus.value;
+    const val_ = val.split(":");
+
+    const hgc = window.hgc.current;
+    const viewconfCohort = hgc.api.getViewConfig();
+    viewconfCohort.views[1].tracks.top.forEach((track) => {
+      if (track.type === "cohort") {
+        track.options["filter"].forEach((filter) => {
+          if (filter["field"] === "status") {
+            filter["target"] = val_;
+          }
+        });
+      }
+    });
+    hgc.api.setViewConfig(viewconfCohort);
+
+  }
+
+  applyPopmaxFilter(event, minMax) {
+    const val = event.target.value;
+
+    if (window.hgc) {
+      const hgc = window.hgc.current;
+      const viewconfCohort = hgc.api.getViewConfig();
+      viewconfCohort.views[1].tracks.top.forEach((track) => {
+        if (track.type === "cohort") {
+          track.options["filter"].forEach((filter) => {
+            if (filter["field"] === "gnomADpopmax_AF") {
+              if (minMax === "min") {
+                filter["target"][0] = val === "" ? -2.0 : parseFloat(val);
+              } else {
+                filter["target"][1] = val === "" ? 1.0 : parseFloat(val);
               }
             }
           });
@@ -234,7 +285,7 @@ export class Facets extends React.PureComponent {
   render() {
     const consequenceLevels = [CL_HIGH, CL_MODERATE, CL_LOW, CL_MODIFIER];
 
-    const { selectedKeggCategory, selectedStatisticalTest } = this.state;
+    const { selectedKeggCategory, selectedStatisticalTest, selectedStatus } = this.state;
 
     return (
       <React.Fragment>
@@ -273,7 +324,7 @@ export class Facets extends React.PureComponent {
                 className="form-check-label"
                 htmlFor="toggle-clinvar-check"
               >
-                Show Clinvar annotations
+                Show ClinVar annotations
               </label>
             </div>
             <div className="form-check mt-2">
@@ -286,7 +337,7 @@ export class Facets extends React.PureComponent {
                 checked={this.state.isGnomadTrackVisible ? "checked" : ""}
               />
               <label className="form-check-label" htmlFor="toggle-gnomad-check">
-                Show GnomAD allele frequencies
+                Show gnomAD allele frequencies
               </label>
             </div>
             <div className="form-check mt-2">
@@ -333,7 +384,7 @@ export class Facets extends React.PureComponent {
             <div className="mt-2">CADD Score</div>
             <div className="row">
               <div className="col-sm-6">
-                <div className="form-group">
+                <div className="form-group mb-0">
                   <input
                     type="text"
                     className="form-control form-control-sm"
@@ -343,7 +394,7 @@ export class Facets extends React.PureComponent {
                 </div>
               </div>
               <div className="col-sm-6">
-                <div className="form-group">
+                <div className="form-group mb-0">
                   <input
                     type="text"
                     className="form-control form-control-sm"
@@ -354,11 +405,42 @@ export class Facets extends React.PureComponent {
               </div>
             </div>
 
-            <div className="mt-1">Consequence levels (VEP)</div>
+            <div className="mt-2">Affected Status</div>
+            <Select
+              value={selectedStatus}
+              onChange={this.applyStatusFilter}
+              options={AFFECTED_STATUS_OPTIONS}
+            />
+
+            <div className="mt-2">gnomAD Popmax Allele Freq.</div>
+            <div className="row">
+              <div className="col-sm-6">
+                <div className="form-group mb-0">
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    placeholder="Min"
+                    onChange={(evt) => this.applyPopmaxFilter(evt, "min")}
+                  />
+                </div>
+              </div>
+              <div className="col-sm-6">
+                <div className="form-group mb-0">
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    placeholder="Max"
+                    onChange={(evt) => this.applyPopmaxFilter(evt, "max")}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-2">Consequence levels (VEP)</div>
             <div className="row">
               {consequenceLevels.map((cl) => (
                 <div className="col-sm-6">
-                  <div class="form-check">
+                  <div className="form-check">
                     <input
                       type="checkbox"
                       className="form-check-input"
@@ -379,7 +461,7 @@ export class Facets extends React.PureComponent {
               ))}
             </div>
 
-            <div className="d-block mb-1 mt-3">
+            {/* <div className="d-block mb-1 mt-3">
               <button
                 type="button"
                 className="btn btn-primary btn-sm btn-block"
@@ -388,7 +470,7 @@ export class Facets extends React.PureComponent {
                 <i className="icon icon-download icon-sm fas mr-1"></i>
                 Export
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </React.Fragment>

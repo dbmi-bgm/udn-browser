@@ -369,7 +369,11 @@
                     "type": "float"
                   },
                   {
-                    "name": "biallelic_pvalue",
+                    "name": "RaMeDiES_denovos_pvalue",
+                    "type": "float"
+                  },
+                  {
+                    "name": "RaMeDiES_comphet_pvalue",
                     "type": "float"
                   }
                 ],
@@ -386,10 +390,10 @@
                 "yValue": {
                   "field": "DeNovoWEST_pvalue"
                 },
-                "significanceTreshold": 1.3,
+                "significanceTreshold": 100,
                 "yAxisLabel": {
                   "visible": true,
-                  "text": "DeNovoWEST p"
+                  "text": "DeNovoWEST"
                 },
                 "project": "UDN"
               },
@@ -397,8 +401,8 @@
               "uid": "udn_gene_track",
               "data": {
                 "type": "vcf",
-                "vcfUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20230417.vcf.gz",
-                "tbiUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20230417.vcf.gz.tbi",
+                "vcfUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20240212.vcf.gz",
+                "tbiUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20240212.vcf.gz.tbi",
                 "chromSizesUrl": "https://aveit.s3.amazonaws.com/higlass/data/sequence/hg38.mod.chrom.sizes"
               },
               "width": 450
@@ -431,8 +435,8 @@
               "type": "cohort",
               "options": {
                 "variantDetailSource": {
-                  "vcfUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.samples.vcf.gz",
-                  "tbiUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.samples.vcf.gz.tbi"
+                  "vcfUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.samples.20240202.vcf.gz",
+                  "tbiUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.samples.20240202.vcf.gz.tbi"
                 },
                 "infoFields": [
                   {
@@ -530,6 +534,14 @@
                   {
                     "name": "spliceai_dl",
                     "type": "float"
+                  },
+                  {
+                    "name": "inheritance",
+                    "type": "string_list"
+                  },
+                  {
+                    "name": "status",
+                    "type": "string"
                   }
                 ],
                 "filter": [
@@ -549,6 +561,23 @@
                     "target": [
                       0.0,
                       1000.0
+                    ]
+                  },
+                  {
+                    "field": "gnomADpopmax_AF",
+                    "operator": "is_between",
+                    "target": [
+                      -2.0,
+                      1.0
+                    ]
+                  },
+                  {
+                    "field": "status",
+                    "operator": "is_one_of",
+                    "target": [
+                      "AFF",
+                      "UA",
+                      "AFF|UA"
                     ]
                   }
                 ],
@@ -595,8 +624,8 @@
               "uid": "FylkvVBTSumoJ959HT4-5B",
               "data": {
                 "type": "vcf",
-                "vcfUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.variants.20230726.multires.vcf.gz",
-                "tbiUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.variants.20230726.multires.vcf.gz.tbi",
+                "vcfUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.variants.20240202.multires.vcf.gz",
+                "tbiUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.variants.20240202.multires.vcf.gz.tbi",
                 "chromSizesUrl": "https://aveit.s3.amazonaws.com/higlass/data/sequence/hg38.mod.chrom.sizes"
               },
               "width": 450
@@ -627,7 +656,7 @@
             {
               "data": {
                 "type": "bbi",
-                "url": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.variants.20230726.coverage.bw",
+                "url": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.variants.20240202.coverage.bw",
                 "chromSizesUrl": "https://aveit.s3.amazonaws.com/higlass/data/sequence/hg38.chrom.sizes"
               },
               "uid": "bw",
@@ -666,8 +695,8 @@
         285637468.9367594
         ],
         "initialYDomain": [
-          1350227946.4736395,
-          1350227946.4736395
+          0,
+          100
         ],
         "genomePositionSearchBox": {
           "visible": true,

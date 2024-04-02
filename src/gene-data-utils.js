@@ -4,14 +4,18 @@ import { format } from "d3-format";
 export const vcfRecordToJson = (vcfRecord, chrom) => {
   const info = vcfRecord["INFO"];
   const posAbs = chr2Abs(vcfRecord.CHROM, +vcfRecord.POS);
+  //console.log(info);
 
-  //DeNovoWEST_pvalue, biallelic_pvalue, go_terms, and kegg_category
+  //DeNovoWEST_pvalue, RaMeDiES_denovos_pvalue, RaMeDiES_comphet_pvalue, go_terms, and kegg_category
 
   const deNovoWestPvalue = info["DeNovoWEST_pvalue"]
-    ? format(",.2f")(info["DeNovoWEST_pvalue"][0])
+    ? format(",.3f")(info["DeNovoWEST_pvalue"][0])
     : 0;
-  const biallelicPvalue = info["biallelic_pvalue"]
-    ? format(",.2f")(info["biallelic_pvalue"][0])
+  const ramediesPvalue = info["RaMeDiES_denovos_pvalue"]
+    ? format(",.3f")(info["RaMeDiES_denovos_pvalue"][0])
+    : 0;
+  const ramediescomphPvalue = info["RaMeDiES_comphet_pvalue"]
+    ? format(",.3f")(info["RaMeDiES_comphet_pvalue"][0])
     : 0;
   const goTerms = info["go_terms"]
     ? info["go_terms"][0].split("|").map((k) => k.replaceAll("_", " "))
@@ -32,7 +36,8 @@ export const vcfRecordToJson = (vcfRecord, chrom) => {
     posAbs: posAbs,
     symbol: info.SYMBOL[0],
     deNovoWestPvalue: deNovoWestPvalue,
-    biallelicPvalue: biallelicPvalue,
+    ramediesPvalue: ramediesPvalue,
+    ramediescomphPvalue: ramediescomphPvalue,
     goTerms: goTerms,
     keggCategoryFormatted: keggCategoryFormatted,
     keggCategory: keggCategory,
