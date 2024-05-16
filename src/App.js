@@ -33,7 +33,7 @@ function App() {
 
       <div className="container mt-5">
         <h2 id="gene-view" className="pt-3">Gene-level statistical analysis</h2>
-        <p class='font10'><i>P-values listed here have not been corrected for multiple hypotheses and therefore are not necessarily significant. The full list(s) of significant findings can be found in <a target="_blank" href="https://www.biorxiv.org/content/10.1101/2024.02.13.580158">our preprint</a>.</i></p>
+        <p className='font10'><i>P-values listed here have not been corrected for multiple hypotheses and therefore are not necessarily significant. The full list(s) of significant findings can be found in <a target="_blank" href="https://www.biorxiv.org/content/10.1101/2024.02.13.580158">our preprint</a>.</i></p>
         
         <GeneTable />
       </div>

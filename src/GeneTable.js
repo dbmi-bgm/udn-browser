@@ -368,7 +368,7 @@ export class GeneTable extends React.Component {
                           </span>
                           
                         </div>
-                        <div class="pl-1 pr-2 align-self-center">
+                        <div className="pl-1 pr-2 align-self-center">
                           <i
                             className={sortSymbolClassDeNovo}
                             onClick={this.sortTable}
