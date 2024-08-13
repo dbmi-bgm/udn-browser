@@ -327,7 +327,7 @@
               "height": 20,
               "server": "https://cgap-higlass.com/api/v1",
               "options": {
-                "text": "UDN Gene-level resuls",
+                "text": "UDN Gene-level results",
                 "align": "left",
                 "offsetY": 4,
                 "fontSize": 11,
@@ -379,7 +379,7 @@
                 ],
                 "filter": [
                   {
-                    "field": "DeNovoWEST_pvalue",
+                    "field": "RaMeDiES_denovos_pvalue",
                     "operator": "is_between",
                     "target": [
                       0.0,
@@ -388,12 +388,12 @@
                   }
                 ],
                 "yValue": {
-                  "field": "DeNovoWEST_pvalue"
+                  "field": "RaMeDiES_denovos_pvalue"
                 },
                 "significanceTreshold": 100,
                 "yAxisLabel": {
                   "visible": true,
-                  "text": "DeNovoWEST"
+                  "text": "RaMeDiES-DN"
                 },
                 "project": "UDN"
               },
@@ -401,8 +401,8 @@
               "uid": "udn_gene_track",
               "data": {
                 "type": "vcf",
-                "vcfUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20240212.vcf.gz",
-                "tbiUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20240212.vcf.gz.tbi",
+                "vcfUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20240812.vcf.gz",
+                "tbiUrl": "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20240812.vcf.gz.tbi",
                 "chromSizesUrl": "https://aveit.s3.amazonaws.com/higlass/data/sequence/hg38.mod.chrom.sizes"
               },
               "width": 450

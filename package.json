@@ -1,6 +1,6 @@
 {
   "name": "udn-browser",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "homepage": "https://dbmi-bgm.github.io/udn-browser",
   "main": "index.js",

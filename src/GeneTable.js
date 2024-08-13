@@ -27,7 +27,7 @@ export class GeneTable extends React.Component {
       displayedVariants: [],
       tablePage: 0,
       filter: {},
-      sortBy: DE_NOVO_WEST_P,
+      sortBy: RAMEDIES_P,
       showGoTerms: false,
       selectedKeggCategory: null,
     };
@@ -211,8 +211,8 @@ export class GeneTable extends React.Component {
         <tr>
           <td>{variant.symbol}</td>
           <td>{variant.chrom}</td>
-          <td>{deNovoWestPvalue}</td>
           <td>{ramediesPvalue}</td>
+          <td>{deNovoWestPvalue}</td>
           <td>{ramediescomphPvalue}</td>
           <td>{kegg}</td>
           <td className={this.state.showGoTerms ? "" : "collapse"}>
@@ -353,6 +353,34 @@ export class GeneTable extends React.Component {
                     <th scope="col">
                       <div className="d-flex flex-row bd-highlight">
                         <div className="align-self-center">
+                          <span
+                            data-tooltip-id="RaMeDiES_tooltip_1"
+                            data-tooltip-html="-log10 of the unadjusted GeneBayes-weighted <br/>
+                            Q-values computed by RaMeDiES-DN, the<br/>
+                            closed-form statistic for assessing the<br/>
+                            significance of de novo variant cohort-level<br/>
+                            recurrence. Coding SNVs and indel<br/>
+                            variants scored by AlphaMissense, <br/>
+                            PrimateAI-3D, CADD & REVEL are considered."
+                            className="underline-dotted"
+                          >
+                            RaMeDiES denovos{" "}
+                            <span className="text-nowrap">p-value</span>
+                          </span>
+                          
+                        </div>
+                        <div className="pl-1 pr-2 align-self-center">
+                          <i
+                            className={sortSymbolClassRamediesPvalue}
+                            onClick={this.sortTable}
+                            data-col={RAMEDIES_P}
+                          ></i>
+                        </div>
+                      </div>
+                    </th>
+                    <th scope="col">
+                      <div className="d-flex flex-row bd-highlight">
+                        <div className="align-self-center">
                         <span
                             data-tooltip-id="denovo_tooltip"
                             data-tooltip-html="-log10 of the unadjusted pvalue computed <br/>
@@ -381,40 +409,14 @@ export class GeneTable extends React.Component {
                       <div className="d-flex flex-row bd-highlight">
                         <div className="align-self-center">
                           <span
-                            data-tooltip-id="RaMeDiES_tooltip_1"
-                            data-tooltip-html="-log10 of the weighted Q-values computed <br/> 
-                            by the closed-form statistic for de <br/> 
-                            novo variant cohort-level recurrence <br/>
-                             introduced in the RaMeDiES package.  <br/>
-                             Coding and intronic SNV and indel  <br/>
-                             variants are considered. "
-                            className="underline-dotted"
-                          >
-                            RaMeDiES denovos{" "}
-                            <span className="text-nowrap">p-value</span>
-                          </span>
-                          
-                        </div>
-                        <div className="pl-1 pr-2 align-self-center">
-                          <i
-                            className={sortSymbolClassRamediesPvalue}
-                            onClick={this.sortTable}
-                            data-col={RAMEDIES_P}
-                          ></i>
-                        </div>
-                      </div>
-                    </th>
-                    <th scope="col">
-                      <div className="d-flex flex-row bd-highlight">
-                        <div className="align-self-center">
-                          <span
                             data-tooltip-id="RaMeDiES_tooltip_2"
-                            data-tooltip-html="-log10 of the unadjusted pvalues indicating <br/>
-                             the significance  of compound heterozygous <br/>
-                             variants observed at the individual-level  <br/>
-                             and computed using the closed-form compound <br/>
-                             heterozygous statistics introduced in the <br/>
-                             RaMeDiES package."
+                            data-tooltip-html="-log10 of the unadjusted p-values computed <br/>
+                            by RaMeDiES-IND, the closed-form statistic <br/>
+                            for assessing the significance of individual-level <br/>
+                            compound heterozygous variants. Coding SNVs and <br/>
+                            indel variants scored by AlphaMissense, <br/>
+                            PrimateAI-3D, CADD & REVEL are considered <br/>
+                            alongside intronic SNVs and indels scored by SpliceAI."
                             className="underline-dotted"
                           >
                             RaMeDiES comphet{" "}

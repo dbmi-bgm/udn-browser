@@ -1,22 +1,22 @@
 export const GENE_VCF_URL =
-  "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20240212.vcf.gz";
+  "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20240812.vcf.gz";
 export const GENE_TBI_URL =
-  "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20240212.vcf.gz.tbi";
+  "https://aveit-tibanna-wolf.s3.amazonaws.com/data/udn/udn.genes.20240812.vcf.gz.tbi";
 
 export const SELECTED_STATISTICAL_TEST = {
-  value: "DeNovoWEST_pvalue",
-  label: "DeNovoWEST",
+  value: "RaMeDiES_denovos_pvalue",
+  label: "RaMeDiES-DN",
 };
-
 
 export const STATISTICAL_TEST_OPTIONS = [
   { value: "DeNovoWEST_pvalue", label: "DeNovoWEST" },
-  { value: "RaMeDiES_denovos_pvalue", label: "RaMeDiES denovos" },
+  { value: "RaMeDiES_denovos_pvalue", label: "RaMeDiES-DN" },
   { value: "RaMeDiES_comphet_pvalue", label: "RaMeDiES comphet" },
 ];
 
 export const SELECTED_AFFECTED_STATUS = {
-  value: "AFF:AFF|UA:UA", label: "Any"
+  value: "AFF:AFF|UA:UA",
+  label: "Any",
 };
 
 export const AFFECTED_STATUS_OPTIONS = [
